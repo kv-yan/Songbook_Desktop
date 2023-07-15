@@ -32,9 +32,10 @@ fun SongsColumItem(song: Song, clickedItem: MutableState<Song>, onEditingItem: (
 
 
 @Composable
-fun SongsColumItem(song: Song, selectedItem: MutableState<Boolean>) {
+fun SongsColumItem(song: Song, selectedItem: MutableState<Boolean>,singleSongScreenContent: MutableState<Song>) {
     Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.clickable {
         selectedItem.value = !selectedItem.value
+        singleSongScreenContent.value = song
     }) {
         MusicSongIcon()
         Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp).fillMaxWidth(0.96f)) {

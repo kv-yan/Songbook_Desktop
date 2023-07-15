@@ -22,17 +22,14 @@ import app.style.appSecondaryColor
 @Composable
 fun SearchView(onSearch: (text: String) -> Unit) {
     var searchQuery by remember { mutableStateOf(TextFieldValue()) }
-    val keyboardController = LocalSoftwareKeyboardController.current
-    val keyboardActions = KeyboardActions(
-        onAny = {
-            // Perform analytics for any keyboard action
-            onSearch(searchQuery.text)
-        },)
 
     Row(modifier = Modifier.padding(8.dp)) {
         TextField(
             value = searchQuery,
-            onValueChange = { searchQuery = it },
+            onValueChange = {
+                searchQuery = it
+                onSearch(searchQuery.text)
+            },
             placeholder = { Text(text = "Որոնել...", color = Color.Gray) },
             modifier = Modifier.weight(1f),
             colors = TextFieldDefaults.textFieldColors(
@@ -42,19 +39,12 @@ fun SearchView(onSearch: (text: String) -> Unit) {
                 cursorColor = Color.Gray,
                 textColor = Color.White
             ),
-//            keyboardOptions = KeyboardOptions(),
             leadingIcon = {
                 Icon(
                     imageVector = Icons.Filled.Search, contentDescription = "Search", tint = Color.White
                 )
             },
-//            keyboardActions = KeyboardActions(onSearch = {
-//                onSearch(searchQuery.text)
-//                print(searchQuery.text)
-//            }),/*
-//            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
             keyboardActions = KeyboardActions(onAny = { onSearch(searchQuery.text) })
-
         )
     }
 }

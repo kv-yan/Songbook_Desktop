@@ -15,7 +15,9 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
+import androidx.compose.ui.window.WindowState
 import androidx.compose.ui.window.application
+import androidx.compose.ui.window.rememberWindowState
 import app.additional.initFirebase
 import app.items.menu.MenuItemRow
 import app.screens.add_new_song.NewSongScreen
@@ -54,7 +56,7 @@ fun MenuSection(
     menuItems: List<MenuItem>,
     selectedItem: MenuItem,
     navigationDestination: MenuItem,
-    onMenuItemClick: (MenuItem) -> Unit
+    onMenuItemClick: (MenuItem) -> Unit,
 ) {
     Column(modifier = Modifier.width(220.dp).drawBehind {
         val x = size.width
@@ -95,7 +97,12 @@ fun ScreenSection(selectedItem: MenuItem) {
 
 
 fun main() = application {
-    Window(onCloseRequest = ::exitApplication) {
+    Window(
+        onCloseRequest = ::exitApplication,
+        state = rememberWindowState(),
+        icon = painterResource("app_logo_white.png"),
+        title = "Բեթհել Երգացուցակ",
+    ) {
         MainScreen()
     }
 }
