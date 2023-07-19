@@ -8,9 +8,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import app.di.AppComponent
@@ -20,6 +22,7 @@ import app.screens.single_song.SingleSongScreen
 import app.style.appBg
 import app.widgets.SearchView
 import app.widgets.SongShimmerAnimation
+import data.lambda.search.searchSongByContains
 import domain.model.Song
 import kotlinx.coroutines.launch
 
@@ -29,7 +32,7 @@ fun HomeScreen() {
     Column(modifier = Modifier.background(Color.Transparent)) {
         val showSingleSong = remember { mutableStateOf(false) }
         val showEditSongScreen = remember { mutableStateOf(false) }
-        MainkContent(showSingleSong, showEditSongScreen)
+        MainContent(showSingleSong, showEditSongScreen)
     }
 }
 
@@ -40,14 +43,15 @@ fun main() = application {
 }
 
 @Composable
-private fun MainkContent(isShowSingleSong: MutableState<Boolean>, isShowEditSongScreen: MutableState<Boolean>) {
+private fun MainContent(isShowSingleSong: MutableState<Boolean>, isShowEditSongScreen: MutableState<Boolean>) {
     val allSongs = remember { mutableStateOf<MutableList<Song>>(mutableListOf()) }
     val screenSongs = remember { mutableStateOf<MutableList<Song>>(mutableListOf()) }
+    val searchText = remember { mutableStateOf(TextFieldValue()) }
     val scope = rememberCoroutineScope()
 
     scope.launch {
         allSongs.value = AppComponent.getSongsFromFirebaseUseCase.execute().toMutableList()
-        screenSongs.value = searchBySongTitle(allSongs.value, "").toMutableList()
+        screenSongs.value = searchSongByContains(allSongs.value, "").toMutableList()
     }
 
     Column(modifier = Modifier.background(appBg).fillMaxSize()) {
@@ -85,8 +89,8 @@ private fun MainkContent(isShowSingleSong: MutableState<Boolean>, isShowEditSong
         } else if (isShowEditSongScreen.value) {
             EditSongScreen(editSongItem.value, isShowEditSongScreen)
         } else {
-            SearchView { query ->
-                screenSongs.value = searchBySongTitle(allSongs.value, query).toMutableList()
+            SearchView(searchText) { query ->
+                screenSongs.value = searchSongByContains(allSongs.value, query).toMutableList()
             }
 
 
@@ -95,6 +99,10 @@ private fun MainkContent(isShowSingleSong: MutableState<Boolean>, isShowEditSong
                     items(25) {
                         SongShimmerAnimation()
                     }
+                }
+            } else if (searchText.value.text.isEmpty() && allSongs.value.isEmpty()) {
+                Column {
+                    Text("Ոչինչ չի գտնվել \'${searchText.value.text}\' ")
                 }
             } else {
                 LazyColumn(modifier = Modifier.fillMaxWidth().background(appBg)) {
@@ -115,18 +123,6 @@ private fun MainkContent(isShowSingleSong: MutableState<Boolean>, isShowEditSong
     }
 }
 
-private fun searchBySongTitle(allSongList: List<Song>, query: String): List<Song> {
-    var filteredList = mutableListOf<Song>()
-    if (query.isNotEmpty()) {
-        allSongList.forEach {
-
-            if (it.words.contains(query)) filteredList.add(it)
-        }
-    } else {
-        filteredList = allSongList.toMutableList()
-    }
-    return filteredList
-}
 
 val onEditSong = { isEditedSong: MutableState<Boolean> ->
     isEditedSong.value = true

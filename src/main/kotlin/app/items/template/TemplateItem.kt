@@ -1,9 +1,10 @@
 package app.items.template
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -25,52 +26,56 @@ fun SongTemplateColumItem(
     isShowEditTemplateScreen: MutableState<Boolean>,
 ) {
     val isShowingTemplateDetails = remember { mutableStateOf(false) }
+    val item = remember { mutableStateOf(template) }
 
-    Column {
+    Column(modifier = Modifier.fillMaxWidth()) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp).fillMaxWidth(0.94f)
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp).fillMaxWidth(0.5f)
         ) {
 
             Text(
-                text = template.performerName,
+                text = item.value.performerName,
                 style = MaterialTheme.typography.body1,
                 color = Color.White,
-                modifier = Modifier.fillMaxSize(0.6f)
+                modifier = Modifier.fillMaxWidth(0.5f)
             )
 
-            Row(modifier = Modifier.fillMaxSize(0.5f), horizontalArrangement = Arrangement.Start) {
+            Row(
+                modifier = Modifier.fillMaxWidth().background(Color.Red),
+                horizontalArrangement = Arrangement.End,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 Text(
-                    text = template.weekday,
+                    text = item.value.weekday,
                     style = MaterialTheme.typography.body1,
                     color = Color.White,
                 )
 
                 Text(
-                    text = "| ${template.createDate}", style = MaterialTheme.typography.body1, color = Color.White
+                    text = "| ${item.value.createDate}", style = MaterialTheme.typography.body1, color = Color.White
                 )
+                IconButton(onClick = { isShowingTemplateDetails.value = !isShowingTemplateDetails.value }) {
+                    Icon(
+                        painter = if (isShowingTemplateDetails.value) painterResource("ic_open_template.png")
+                        else painterResource("ic_close_template.png"), contentDescription = null, tint = Color.White
+                    )
+                }
 
-                Icon(painter = if (isShowingTemplateDetails.value) painterResource("ic_open_template.png")
-                else painterResource("ic_close_template.png"),
-                    contentDescription = null,
-                    tint = Color.White,
-                    modifier = Modifier.padding(start = 16.dp).clickable {
-                        isShowingTemplateDetails.value = !isShowingTemplateDetails.value
-                    })
+                MoreVerticalIconTemplate(
+                    template, isShowEditTemplateScreen
+                )
             }
 
-            MoreVerticalIconTemplate(
-                template, isShowEditTemplateScreen
-            )
-        }
-
-        AnimatedVisibility(visible = isShowingTemplateDetails.value) {
-            Text(
-                text = template.getDetails(),
-                style = MaterialTheme.typography.body1,
-                color = Color.White,
-                modifier = Modifier.padding(start = 24.dp, bottom = 24.dp)
-            )
+            AnimatedVisibility(visible = isShowingTemplateDetails.value) {
+                println(item.value.glorifyingSong.size)
+                Text(
+                    text = item.value.getDetails(),
+                    style = MaterialTheme.typography.body1,
+                    color = Color.White,
+                    modifier = Modifier.padding(start = 24.dp, bottom = 24.dp)
+                )
+            }
         }
     }
 }

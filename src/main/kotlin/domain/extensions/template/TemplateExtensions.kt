@@ -16,5 +16,6 @@ fun SongTemplate.getDetails(): String {
     this.giftSong.forEach { song ->
         details.plus("song.title\n")
     }
+    println("$details worked")
     return details
 }

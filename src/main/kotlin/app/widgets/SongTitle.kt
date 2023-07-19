@@ -13,7 +13,7 @@ import androidx.compose.ui.unit.dp
 fun SongTitle(text:String) {
     Text(
         text = text,
-        style = MaterialTheme.typography.body2,
+        style = MaterialTheme.typography.body1,
         color = Color.White, modifier = Modifier.padding(bottom = 4.dp),
     )
 }

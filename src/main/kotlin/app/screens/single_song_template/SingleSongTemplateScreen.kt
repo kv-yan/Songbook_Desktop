@@ -86,7 +86,7 @@ private fun MainContent(
             color = appTextColor,
             modifier = Modifier.padding(vertical = 12.dp, horizontal = 24.dp)
         )
-        LazyColumn(modifier = Modifier.fillMaxWidth().background(appBg).heightIn(150.dp, 350.dp)) {
+        LazyColumn(modifier = Modifier.fillMaxWidth().background(appBg).heightIn(150.dp, 1000.dp)) {
             items(template.glorifyingSong) { item ->
                 SongsColumItem(item, isShowSingleSong, singleSongScreenContent)
             }
@@ -99,7 +99,7 @@ private fun MainContent(
             color = appTextColor,
             modifier = Modifier.padding(vertical = 12.dp, horizontal = 24.dp)
         )
-        LazyColumn(modifier = Modifier.fillMaxWidth().background(appBg).heightIn(150.dp, 350.dp)) {
+        LazyColumn(modifier = Modifier.fillMaxWidth().background(appBg).heightIn(150.dp, 1000.dp)) {
             items(template.worshipSong) { item ->
                 SongsColumItem(item, isShowSingleSong, singleSongScreenContent)
             }
@@ -113,7 +113,7 @@ private fun MainContent(
             modifier = Modifier.padding(vertical = 12.dp, horizontal = 24.dp)
         )
 
-        LazyColumn(modifier = Modifier.fillMaxWidth().background(appBg).heightIn(150.dp, 350.dp)) {
+        LazyColumn(modifier = Modifier.fillMaxWidth().background(appBg).heightIn(150.dp, 1000.dp)) {
             items(template.giftSong) { item ->
                 SongsColumItem(item, isShowSingleSong, singleSongScreenContent)
             }

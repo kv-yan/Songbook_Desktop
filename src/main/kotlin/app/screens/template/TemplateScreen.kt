@@ -10,6 +10,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.input.TextFieldValue
 import app.di.AppComponent
 import app.items.template.SongTemplateColumItem
 import app.screens.edit_song_template.EditSongTemplateScreen
@@ -25,13 +26,13 @@ fun TemplateScreen() {
     Column(modifier = Modifier.background(Color.Transparent)) {
         val showSingleSongTemplate = remember { mutableStateOf(false) }
         val showIsEditSongTemplate = remember { mutableStateOf(false) }
-        MainkContent(showSingleSongTemplate, showIsEditSongTemplate)
+        MainContent(showSingleSongTemplate, showIsEditSongTemplate)
     }
 }
 
 
 @Composable
-private fun MainkContent(
+private fun MainContent(
     isShowSingleSongTemplate: MutableState<Boolean>,
     showIsEditSongTemplate: MutableState<Boolean>,
 ) {
@@ -50,7 +51,7 @@ private fun MainkContent(
             )
         )
     }
-
+    val searchText = remember { mutableStateOf(TextFieldValue()) }
     val allSongs = remember { mutableStateOf<List<SongTemplate>>(mutableListOf()) }
     val scope = rememberCoroutineScope()
     val isShowSingleSong = remember { mutableStateOf(false) }
@@ -63,7 +64,7 @@ private fun MainkContent(
         } else if (showIsEditSongTemplate.value) {
             EditSongTemplateScreen(selectedTemplateItem.value, showIsEditSongTemplate)
         } else {
-            SearchView {}
+            SearchView(searchText) {}
             if (allSongs.value.isEmpty()) {
                 LazyColumn(modifier = Modifier.fillMaxWidth().background(appBg)) {
                     items(15) {

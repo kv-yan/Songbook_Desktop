@@ -15,6 +15,7 @@ import domain.extensions.song.getWordsFirst2Lines
 fun SongTonality(text: String) {
 
     Text(
-        text = text, fontSize = 12.sp, color = Color.White
-    )
-}
+        text = text,
+        style = MaterialTheme.typography.body2,
+        color = Color.White, modifier = Modifier.padding(bottom = 4.dp),
+    )}

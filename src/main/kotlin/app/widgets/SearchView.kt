@@ -9,26 +9,23 @@ import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.runtime.*
-import androidx.compose.ui.ExperimentalComposeUiApi
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import app.style.appSecondaryColor
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun SearchView(onSearch: (text: String) -> Unit) {
-    var searchQuery by remember { mutableStateOf(TextFieldValue()) }
+fun SearchView(searchQuery: MutableState<TextFieldValue>, onSearch: (text: String) -> Unit) {
 
     Row(modifier = Modifier.padding(8.dp)) {
         TextField(
-            value = searchQuery,
+            value = searchQuery.value,
             onValueChange = {
-                searchQuery = it
-                onSearch(searchQuery.text)
+                searchQuery.value = it
+                onSearch(searchQuery.value.text)
             },
             placeholder = { Text(text = "Որոնել...", color = Color.Gray) },
             modifier = Modifier.weight(1f),
@@ -44,7 +41,7 @@ fun SearchView(onSearch: (text: String) -> Unit) {
                     imageVector = Icons.Filled.Search, contentDescription = "Search", tint = Color.White
                 )
             },
-            keyboardActions = KeyboardActions(onAny = { onSearch(searchQuery.text) })
+            keyboardActions = KeyboardActions(onAny = { onSearch(searchQuery.value.text) })
         )
     }
 }
