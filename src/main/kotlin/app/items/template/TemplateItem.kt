@@ -1,7 +1,6 @@
 package app.items.template
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -42,7 +41,7 @@ fun SongTemplateColumItem(
             )
 
             Row(
-                modifier = Modifier.fillMaxWidth().background(Color.Red),
+                modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.End,
                 verticalAlignment = Alignment.CenterVertically
             ) {
