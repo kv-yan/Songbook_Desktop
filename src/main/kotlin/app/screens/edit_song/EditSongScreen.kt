@@ -68,6 +68,7 @@ private fun MainContent(song: Song, isShowEditSongScreen: MutableState<Boolean>)
                 songTitle.value.text,
                 songTonality.value.text,
                 songWords.value.text,
+                songTemp.value.text.toInt(),
                 songIsGlorifyingSong.value,
                 songIsWorshipSong.value,
                 songIsGiftSong.value,

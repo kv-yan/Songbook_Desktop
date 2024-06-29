@@ -25,25 +25,24 @@ class GetSongsFromFirebaseImpl : GetSongsFromFirebase {
                     val isGiftSong = song.getValue("giftSong") as Boolean
                     val isFromSongbookSong = song.getValue("fromSongbookSong") as Boolean
 
-                    if (isGlorifyingSong || isWorshipSong || isGiftSong || isFromSongbookSong) {
-                        val title = song.getValue("title") as String
-                        val tonality = song.getValue("tonality") as String
-                        val words = song.getValue("words") as String
-                        val id = item.key as String
+                    val title = song.getValue("title") as String
+                    val tonality = song.getValue("tonality") as String
+                    val words = song.getValue("words") as String
+                    val temp = song.getValue("temp") as Long
+                    val id = item.key as String
 
-                        val songObj = Song(
-                            id = id,
-                            title = title,
-                            tonality = tonality,
-                            words = words,
-                            isGlorifyingSong = isGlorifyingSong,
-                            isWorshipSong = isWorshipSong,
-                            isGiftSong = isGiftSong,
-                            isFromSongbookSong = isFromSongbookSong
-                        )
-
-                        allSongList.add(songObj)
-                    }
+                    val songObj = Song(
+                        id = id,
+                        title = title,
+                        tonality = tonality,
+                        words = words,
+                        temp = temp.toInt(),
+                        isGlorifyingSong = isGlorifyingSong,
+                        isWorshipSong = isWorshipSong,
+                        isGiftSong = isGiftSong,
+                        isFromSongbookSong = isFromSongbookSong
+                    )
+                    allSongList.add(songObj)
                 }
 
                 continuation.resume(allSongList)

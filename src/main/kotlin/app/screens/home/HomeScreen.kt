@@ -12,6 +12,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
@@ -65,6 +66,7 @@ private fun MainContent(isShowSingleSong: MutableState<Boolean>, isShowEditSongS
                     isGlorifyingSong = false,
                     isWorshipSong = false,
                     isGiftSong = false,
+                    temp = 100,
                     isFromSongbookSong = false
                 )
             )
@@ -77,6 +79,7 @@ private fun MainContent(isShowSingleSong: MutableState<Boolean>, isShowEditSongS
                     tonality = "error",
                     words = "error",
                     isGlorifyingSong = false,
+                    temp = 100,
                     isWorshipSong = false,
                     isGiftSong = false,
                     isFromSongbookSong = false
@@ -85,7 +88,9 @@ private fun MainContent(isShowSingleSong: MutableState<Boolean>, isShowEditSongS
         }
 
         if (isShowSingleSong.value) {
-            SingleSongScreen(selectedSongItem.value, isShowSingleSong)
+            SingleSongScreen(selectedSongItem.value, isShowSingleSong, onEditClick = {
+                onEditSong(isShowEditSongScreen)
+            })
         } else if (isShowEditSongScreen.value) {
             EditSongScreen(editSongItem.value, isShowEditSongScreen)
         } else {
@@ -96,7 +101,7 @@ private fun MainContent(isShowSingleSong: MutableState<Boolean>, isShowEditSongS
 
             if (allSongs.value.isEmpty()) {
                 LazyColumn(modifier = Modifier.fillMaxWidth().background(appBg)) {
-                    items(25) {
+                    items(8) {
                         SongShimmerAnimation()
                     }
                 }

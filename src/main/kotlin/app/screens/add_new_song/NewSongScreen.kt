@@ -2,10 +2,8 @@ package app.screens.add_new_song
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -15,25 +13,78 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import app.di.AppComponent
+import app.dialog.snackbar.AppSnackbar
 import app.style.appBg
 import app.style.appSecondaryColor
+import app.style.appTextColor
 import app.widgets.CheckboxWithText
 import app.widgets.RadioButtonWithText
 import app.widgets.TextField
 import data.lambda.song.makeSong.makeSong
 import domain.model.Song
 
+
+enum class NewSongFieldState(val msg: String, val bgColor: Color) {
+    INVALID_TITLE("Լրացրեք 'Վերնագիր' բաժինը", Color.Red), INVALID_WORDS(
+        "Լրացրեք 'Բառեր' բաժինը",
+        Color.Red
+    ),
+    INVALID_TONALITY("Լրացրեք 'Տոն' բաժինը", Color.Red), INVALID_TEMP(
+        "Լրացրեք 'Տեմպ' բաժինը",
+        Color.Red
+    ),
+    INVALID_CATEGORY(
+        "Նշեք թէ երգը որ տեսակին է պատկանում․ \nԵրգը պոտք է լինի կամ 'փառաբանություն' կամ 'Երկրպագություն'", Color.Red
+    ),
+    DONE("Երգը հաջողությամբ պահպանվել է", appSecondaryColor),
+}
+
 @Composable
 fun NewSongScreen() {
-    MainContent()
+    val isSongSavedCorrectly = remember { mutableStateOf(false) }
+    val newSongFieldState = remember { mutableStateOf(NewSongFieldState.INVALID_CATEGORY) }
+
+    Box {
+        MainContent(isSongSavedCorrectly, newSongFieldState)
+
+        AppSnackbar(isSongSavedCorrectly, Modifier.offset(y = 40.dp).padding(end = 24.dp)) {
+            Spacer(modifier = Modifier.height(24.dp))
+            Row(
+                modifier = Modifier.fillMaxWidth(0.4f)
+                    .background(newSongFieldState.value.bgColor, RoundedCornerShape(8.dp)).padding(16.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    painter = painterResource(if (newSongFieldState.value == NewSongFieldState.DONE) "ic_done.png" else "ic_error.png"),
+                    contentDescription = null,
+                    tint = Color.White,
+                    modifier = Modifier.size(24.dp)
+                )
+                Spacer(modifier = Modifier.width(4.dp))
+                Text(
+                    text = newSongFieldState.value.msg,
+                    style = MaterialTheme.typography.subtitle1,
+                    color = appTextColor,
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+            }
+        }
+    }
 }
 
 
 @Composable
-private fun MainContent() {
+private fun MainContent(
+    isSongSavedCorrectly: MutableState<Boolean>,
+    newSongFieldState: MutableState<NewSongFieldState>,
+) {
+
+
     Row(modifier = Modifier.fillMaxSize().background(appBg)) {
         val songTitle = remember { mutableStateOf(TextFieldValue()) }
         val songTonality = remember { mutableStateOf(TextFieldValue()) }
@@ -50,26 +101,63 @@ private fun MainContent() {
             val y = size.height
             drawLine(color = appSecondaryColor, start = Offset(x, 0f), end = Offset(x, y), strokeWidth = 2f)
         }) {
-            TextField(placeholder = "Վերնագիր․․․", songTitle, textStyle = MaterialTheme.typography.h6,)
+            TextField(placeholder = "Վերնագիր․․․", songTitle, textStyle = MaterialTheme.typography.h6)
 
-        TextField(placeholder = "Բառեր․․․",songWords,textStyle = MaterialTheme.typography.h6)
+            TextField(placeholder = "Բառեր․․․", songWords, textStyle = MaterialTheme.typography.h6)
         }
         SongSettingScreen(
-            songTonality, songTemp,
-            songIsGlorifyingSong, songIsWorshipSong, songIsGiftSong, songIsFromSongbookSong
+            songTonality, songTemp, songIsGlorifyingSong, songIsWorshipSong, songIsGiftSong, songIsFromSongbookSong
         ) {
             val newSong = makeSong(
                 songTitle.value.text,
                 songTonality.value.text,
                 songWords.value.text,
+                if (songTemp.value.text.isEmpty()) 0 else songTemp.value.text.toInt(),
                 songIsGlorifyingSong.value,
                 songIsWorshipSong.value,
                 songIsGiftSong.value,
                 songIsFromSongbookSong.value
             )
-            savingLogic(newSong)
+
+
+            savingLogic(newSong, isSongSavedCorrectly, newSongFieldState) {
+                cleanFieldsValues(
+                    songTitle,
+                    songTonality,
+                    songWords,
+                    songTemp,
+                    songIsGlorifyingSong,
+                    songIsWorshipSong,
+                    songIsGiftSong,
+                    songIsFromSongbookSong
+                )
+
+            }
         }
+
     }
+//    SongSavedSuccessfully(isSongSavedCorrectly)
+}
+
+fun cleanFieldsValues(
+    songTitle: MutableState<TextFieldValue>,
+    songTonality: MutableState<TextFieldValue>,
+    songWords: MutableState<TextFieldValue>,
+    songTemp: MutableState<TextFieldValue>,
+    songIsGlorifyingSong: MutableState<Boolean>,
+    songIsWorshipSong: MutableState<Boolean>,
+    songIsGiftSong: MutableState<Boolean>,
+    songIsFromSongbookSong: MutableState<Boolean>,
+) {
+    songTitle.value = songTitle.value.copy(text = "")
+    songTonality.value = songTonality.value.copy(text = "")
+    songWords.value = songWords.value.copy(text = "")
+    songTemp.value = songTemp.value.copy(text = "")
+
+    songIsGlorifyingSong.value = false
+    songIsWorshipSong.value = false
+    songIsGiftSong.value = false
+    songIsFromSongbookSong.value = false
 }
 
 
@@ -81,11 +169,11 @@ fun SongSettingScreen(
     songIsWorship: MutableState<Boolean>,
     songIsGift: MutableState<Boolean>,
     songIsFromSongbook: MutableState<Boolean>,
-    onClick: () -> Unit
+    onClick: () -> Unit,
 ) {
     Column {
-        app.widgets.TextField(placeholder = "Տոն․․․", songTonality)
-        app.widgets.TextField(placeholder = "Տեմպ․․․", songTemp)
+        TextField(placeholder = "Տոն․․․", songTonality)
+        TextField(placeholder = "Տեմպ․․․", songTemp)
 
         Column {
             RadioButtonWithText("Փառաբանություն", songIsGlorifying, songIsWorship)
@@ -108,30 +196,26 @@ fun SongSettingScreen(
     }
 }
 
-fun savingLogic(newSong: Song) {
+fun savingLogic(
+    newSong: Song,
+    showDialog: MutableState<Boolean>,
+    newSongFieldState: MutableState<NewSongFieldState>,
+    onCompleted: () -> Unit,
+) {
     if (newSong.title.isEmpty()) {
-        println("error :: empty title ")
-        println("-----------------------------------")
-        // TODO: setError
+        newSongFieldState.value = NewSongFieldState.INVALID_TITLE
+    }  else if (newSong.words.isEmpty()) {
+        newSongFieldState.value = NewSongFieldState.INVALID_WORDS
     } else if (newSong.tonality.isEmpty()) {
-        println("error :: empty tonality ")
-        println("-----------------------------------")
-        // TODO: setError
-    } else if (newSong.words.isEmpty()) {
-        println("error :: empty words ")
-        println("-----------------------------------")
-        // TODO: setError
-    } /*else if (newSong.temp.isEmpty()) {
-        println("error :: empty temp ")
-        println("-----------------------------------")
-        // TODO: setError
-    }*/ else if (!newSong.isGlorifyingSong && !newSong.isWorshipSong) {
-        println("error :: select song type ")
-        println("-----------------------------------")
-        // TODO: setError
-        // TODO: hint user for check song type
+        newSongFieldState.value = NewSongFieldState.INVALID_TONALITY
+    }else if (newSong.temp == 0 || newSong.temp < 0) {
+        newSongFieldState.value = NewSongFieldState.INVALID_TEMP
+    } else if (!newSong.isGlorifyingSong && !newSong.isWorshipSong) {
+        newSongFieldState.value = NewSongFieldState.INVALID_CATEGORY
     } else {
         AppComponent.saveSongToFirebaseUseCase.saveSongToFirebase.saveSong(newSong)
-        println("Saved new song ")
+        onCompleted.invoke()
+        newSongFieldState.value = NewSongFieldState.DONE
     }
+    showDialog.value = true
 }

@@ -37,7 +37,7 @@ fun MainScreen() {
 
     /*   ******** UI ********   */
     val menuItems = getMenuItems()
-    val selectedItem = remember { mutableStateOf(menuItems[1]) }
+    val selectedItem = remember { mutableStateOf(menuItems[0]) }
 
     Row(modifier = Modifier.fillMaxSize().background(appBg)) {
         MenuSection(menuItems = menuItems,
@@ -100,7 +100,7 @@ fun main() = application {
     Window(
         onCloseRequest = ::exitApplication,
         state = rememberWindowState(),
-        icon = painterResource("app_logo_white.png"),
+        icon = painterResource("app_logo_transparent.png"),
         title = "Բեթհել Երգացուցակ",
     ) {
         MainScreen()

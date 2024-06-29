@@ -58,10 +58,13 @@ private fun MainContent() {
         val templateWeekday = remember { mutableStateOf("") }
         val isSendNotification = remember { mutableStateOf(false) }
 
-        scope.launch {
-            glorifyingAllSongs.value.addAll(AppComponent.getGlorifyingSongsFromFirebaseUseCase.execute())
-            worshipAllSongs.value.addAll(AppComponent.getWorshipSongsFromFirebaseUseCase.execute())
-            giftAllSongs.value.addAll(AppComponent.getGiftSongsFromFirebaseUseCase.execute())
+        LaunchedEffect(Unit) {
+            scope.launch {
+                glorifyingAllSongs.value.addAll(AppComponent.getGlorifyingSongsFromFirebaseUseCase.execute())
+                worshipAllSongs.value.addAll(AppComponent.getWorshipSongsFromFirebaseUseCase.execute())
+                giftAllSongs.value.addAll(AppComponent.getGiftSongsFromFirebaseUseCase.execute())
+            }
+
         }
 
         val isShowAddSongFunctionality = remember {
@@ -89,18 +92,10 @@ private fun MainContent() {
                         actionAddSong
                     )
                     CategorySongLabel(
-                        "Երկրպագություն",
-                        templateWorshipSongs,
-                        isShowAddSongFunctionality,
-                        addSongTitle,
-                        actionAddSong
+                        "Երկրպագություն", templateWorshipSongs, isShowAddSongFunctionality, addSongTitle, actionAddSong
                     )
                     CategorySongLabel(
-                        "Ընծա",
-                        templateGiftSongs,
-                        isShowAddSongFunctionality,
-                        addSongTitle,
-                        actionAddSong
+                        "Ընծա", templateGiftSongs, isShowAddSongFunctionality, addSongTitle, actionAddSong
                     )
                 }
             }
@@ -115,8 +110,7 @@ private fun MainContent() {
         AnimatedVisibility(visible = isShowAddSongFunctionality.value) {
             isShowTemplateSettings.value = !isShowAddSongFunctionality.value
             CategoriesAddSongsFunctionalityScreen(
-                isShowAddSongFunctionality,
-                glorifyingAllSongs.value, addSongTitle, actionAddSong
+                isShowAddSongFunctionality, glorifyingAllSongs.value, addSongTitle, actionAddSong
             )
         }
         val template = remember {
@@ -133,11 +127,7 @@ private fun MainContent() {
             )
         }
         TemplateSettingsScreen(
-            isShowTemplateSettings,
-            templatePerformerName,
-            templateWeekday,
-            isSendNotification,
-            template.value
+            isShowTemplateSettings, templatePerformerName, templateWeekday, isSendNotification, template.value
         )
     }
 }

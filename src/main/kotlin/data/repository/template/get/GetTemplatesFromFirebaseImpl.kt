@@ -9,8 +9,7 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
 class GetTemplatesFromFirebaseImpl : GetTemplatesFromFirebase {
-    private val mDataBase: DatabaseReference =
-        FirebaseDatabase.getInstance().getReference("SongsTemplate")
+    private val mDataBase: DatabaseReference = FirebaseDatabase.getInstance().getReference("SongsTemplate")
 
     override suspend fun getTemplates(): List<SongTemplate> = suspendCancellableCoroutine { continuation ->
         var templateList = mutableListOf<SongTemplate>()
@@ -38,8 +37,7 @@ class GetTemplatesFromFirebaseImpl : GetTemplatesFromFirebase {
                         worshipSong = getListOfSongs(template.getValue("worshipSong") as ArrayList<HashMap<Any, Any>>)
                         giftSong = getListOfSongs(template.getValue("giftSong") as ArrayList<HashMap<Any, Any>>)
                         templateList.add(
-                            SongTemplate(
-                                /*"SongTemplate"*/id,
+                            SongTemplate(/*"SongTemplate"*/id,
                                 createDate,
                                 performerName,
                                 weekday,
@@ -76,6 +74,7 @@ class GetTemplatesFromFirebaseImpl : GetTemplatesFromFirebase {
             lateinit var title: String
             lateinit var tonality: String
             lateinit var words: String
+            var temp: Int = 0
             var isGlorifyingSong: Boolean
             var isWorshipSong: Boolean
             var isGiftSong: Boolean
@@ -84,14 +83,14 @@ class GetTemplatesFromFirebaseImpl : GetTemplatesFromFirebase {
             title = songItem.getValue("title") as String
             tonality = songItem.getValue("tonality") as String
             words = songItem.getValue("words") as String
+            temp = songItem.getValue("temp") as Int
             isGlorifyingSong = songItem.getValue("glorifyingSong") as Boolean
             isWorshipSong = songItem.getValue("worshipSong") as Boolean
             isGiftSong = songItem.getValue("giftSong") as Boolean
             isFromSongbookSong = songItem.getValue("fromSongbookSong") as Boolean
             mDataBase.key?.let {
                 Song(
-                    it, title, tonality, words, isGlorifyingSong,
-                    isWorshipSong, isGiftSong, isFromSongbookSong
+                    it, title, tonality, words, temp, isGlorifyingSong, isWorshipSong, isGiftSong, isFromSongbookSong
                 )
             }?.let {
                 songList.add(it)

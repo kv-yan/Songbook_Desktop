@@ -35,6 +35,7 @@ fun SingleSongTemplateScreen(
                 words = "404",
                 isGlorifyingSong = false,
                 isWorshipSong = false,
+                temp = 100,
                 isGiftSong = false,
                 isFromSongbookSong = false
             )
@@ -42,7 +43,7 @@ fun SingleSongTemplateScreen(
     }
     if (isShowSingleSong.value) {
         SingleSongScreen(
-            song = singleSongScreenContent.value, isShowSingleSong = isShowSingleSong
+            song = singleSongScreenContent.value, isShowSingleSong = isShowSingleSong, onEditClick = {}
         )
     } else {
         MainContent(songTemplate, isShowTemplateDetails, isShowSingleSong, singleSongScreenContent)
