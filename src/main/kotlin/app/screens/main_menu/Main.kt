@@ -40,7 +40,7 @@ fun MainScreen(newSongTitle: MutableState<TextFieldValue>, newSongWords: Mutable
 
     /*   ******** UI ********   */
     val menuItems = getMenuItems(newSongTitle, newSongWords)
-    val selectedItem = remember { mutableStateOf(menuItems[1]) }
+    val selectedItem = remember { mutableStateOf(menuItems[0]) }
 
     Row(modifier = Modifier.fillMaxSize().background(appBg)) {
         MenuSection(
@@ -107,7 +107,7 @@ fun ScreenSection(
 }
 
 
-fun main() = singleWindowApplication {
+fun main() = singleWindowApplication(title = "Bethel" , icon = painterResource("app_logo_transparent.png")) {
     val titleState = remember { mutableStateOf(TextFieldValue()) }
     val wordsState = remember { mutableStateOf(TextFieldValue()) }
 

@@ -22,7 +22,6 @@ import app.style.appBg
 import app.style.appSecondaryColor
 import app.style.appTextColor
 import app.widgets.CheckboxWithText
-import app.widgets.RadioButtonWithText
 import app.widgets.TextField
 import data.lambda.song.makeSong.makeSong
 import domain.model.Song
@@ -172,22 +171,22 @@ fun SongSettingScreen(
     songIsWorship: MutableState<Boolean>,
     songIsGift: MutableState<Boolean>,
     songIsFromSongbook: MutableState<Boolean>,
-    onClick: () -> Unit,
+    onSaveClick: () -> Unit,
 ) {
     Column {
         TextField(placeholder = "Տոն․․․", songTonality)
         TextField(placeholder = "Տեմպ․․․", songTemp)
 
         Column {
-            RadioButtonWithText("Փառաբանություն", songIsGlorifying, songIsWorship)
-            RadioButtonWithText("Երկրպագություն", songIsWorship, songIsGlorifying)
+            CheckboxWithText("Փառաբանություն", songIsGlorifying)
+            CheckboxWithText("Երկրպագություն", songIsWorship)
             CheckboxWithText("Ընծա", songIsGift)
             CheckboxWithText("Երգարանային", songIsFromSongbook)
 
             Box(contentAlignment = Alignment.BottomCenter, modifier = Modifier.background(appBg).fillMaxSize()) {
                 Button(
                     onClick = {
-                        onClick()
+                        onSaveClick()
                     },
                     modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 16.dp),
                     colors = ButtonDefaults.buttonColors(backgroundColor = appSecondaryColor)

@@ -35,7 +35,7 @@ private fun MainContent(song: Song, isShowEditSongScreen: MutableState<Boolean>)
     Row(modifier = Modifier.fillMaxSize().background(appBg)) {
         val songTitle = remember { mutableStateOf(TextFieldValue().copy(text = song.title)) }
         val songTonality = remember { mutableStateOf(TextFieldValue().copy(text = song.tonality)) }
-        val songTemp = remember { mutableStateOf(TextFieldValue()/*.copy(text = song.temp)*/) }
+        val songTemp = remember { mutableStateOf(TextFieldValue().copy(text = song.temp)) }
         val songWords = remember { mutableStateOf(TextFieldValue().copy(text = song.words)) }
 
         val songIsGlorifyingSong = remember { mutableStateOf(song.isGlorifyingSong) }

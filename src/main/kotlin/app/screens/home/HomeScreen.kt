@@ -12,7 +12,6 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
@@ -90,6 +89,8 @@ private fun MainContent(isShowSingleSong: MutableState<Boolean>, isShowEditSongS
         if (isShowSingleSong.value) {
             SingleSongScreen(selectedSongItem.value, isShowSingleSong, onEditClick = {
                 onEditSong(isShowEditSongScreen)
+                editSongItem.value = selectedSongItem.value
+                isShowSingleSong.value = false
             })
         } else if (isShowEditSongScreen.value) {
             EditSongScreen(editSongItem.value, isShowEditSongScreen)

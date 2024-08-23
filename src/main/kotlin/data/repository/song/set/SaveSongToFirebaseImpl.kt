@@ -8,7 +8,7 @@ import domain.repository.song.set.SaveSongToFirebase
 class SaveSongToFirebaseImpl : SaveSongToFirebase {
     private val databaseRef: DatabaseReference = FirebaseDatabase.getInstance().getReference("Song")
 
-    override  fun saveSong(song: Song) {
+    override fun saveSong(song: Song) {
         try {
             databaseRef.push().setValue(song, null)
         } catch (ex: Exception) {
