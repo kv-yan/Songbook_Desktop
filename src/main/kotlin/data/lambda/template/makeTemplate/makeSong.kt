@@ -11,7 +11,8 @@ fun makeSongTemplate(
     glorifyingSong: List<Song>,
     worshipSong: List<Song>,
     giftSong: List<Song>,
-) = SongTemplate("SongTemplate", createDate, performerName, weekday, favorite, glorifyingSong, worshipSong, giftSong)
+    singleModeSongs: List<Song>,
+) = SongTemplate("SongTemplate", createDate, performerName, weekday, favorite, glorifyingSong, worshipSong, giftSong, singleModeSongs)
 
 fun makeSong(
     id: String,
@@ -22,4 +23,5 @@ fun makeSong(
     glorifyingSong: List<Song>,
     worshipSong: List<Song>,
     giftSong: List<Song>,
-) = SongTemplate(id, createDate, performerName, weekday, favorite, glorifyingSong, worshipSong, giftSong)
+    singleModeSongs: List<Song>
+) = SongTemplate(id, createDate, performerName, weekday, favorite, glorifyingSong, worshipSong, giftSong , singleModeSongs)

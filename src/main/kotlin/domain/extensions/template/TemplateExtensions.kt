@@ -3,19 +3,18 @@ package domain.extensions.template
 import domain.model.SongTemplate
 
 fun SongTemplate.getDetails(): String {
-    val details = ""
+    val details = StringBuilder()
     this.glorifyingSong.forEach { song ->
-        details.plus("song.title\n")
+        details.append("${song.title}\n")
     }
-    details.plus("\n")
+    details.append("\n")
 
     this.worshipSong.forEach { song ->
-        details.plus("song.title\n")
+        details.append("${song.title}\n")
     }
-    details.plus("\n")
+    details.append("\n")
     this.giftSong.forEach { song ->
-        details.plus("song.title\n")
+        details.append("${song.title}\n")
     }
-    println("$details worked")
-    return details
+    return details.toString()
 }

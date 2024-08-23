@@ -30,12 +30,10 @@ import domain.model.Song
 
 enum class NewSongFieldState(val msg: String, val bgColor: Color) {
     INVALID_TITLE("Լրացրեք 'Վերնագիր' բաժինը", Color.Red), INVALID_WORDS(
-        "Լրացրեք 'Բառեր' բաժինը",
-        Color.Red
+        "Լրացրեք 'Բառեր' բաժինը", Color.Red
     ),
     INVALID_TONALITY("Լրացրեք 'Տոն' բաժինը", Color.Red), INVALID_TEMP(
-        "Լրացրեք 'Տեմպ' բաժինը",
-        Color.Red
+        "Լրացրեք 'Տեմպ' բաժինը", Color.Red
     ),
     INVALID_CATEGORY(
         "Նշեք թէ երգը որ տեսակին է պատկանում․ \nԵրգը պոտք է լինի կամ 'փառաբանություն' կամ 'Երկրպագություն'", Color.Red
@@ -44,12 +42,17 @@ enum class NewSongFieldState(val msg: String, val bgColor: Color) {
 }
 
 @Composable
-fun NewSongScreen() {
+fun NewSongScreen(newSongTitle: MutableState<TextFieldValue>, newSongWords: MutableState<TextFieldValue>) {
     val isSongSavedCorrectly = remember { mutableStateOf(false) }
     val newSongFieldState = remember { mutableStateOf(NewSongFieldState.INVALID_CATEGORY) }
 
     Box {
-        MainContent(isSongSavedCorrectly, newSongFieldState)
+        MainContent(
+            isSongSavedCorrectly = isSongSavedCorrectly,
+            newSongFieldState = newSongFieldState,
+            songTitle = newSongTitle,
+            songWords = newSongWords
+        )
 
         AppSnackbar(isSongSavedCorrectly, Modifier.offset(y = 40.dp).padding(end = 24.dp)) {
             Spacer(modifier = Modifier.height(24.dp))
@@ -82,14 +85,14 @@ fun NewSongScreen() {
 private fun MainContent(
     isSongSavedCorrectly: MutableState<Boolean>,
     newSongFieldState: MutableState<NewSongFieldState>,
+    songTitle: MutableState<TextFieldValue>,
+    songWords: MutableState<TextFieldValue>,
 ) {
 
 
     Row(modifier = Modifier.fillMaxSize().background(appBg)) {
-        val songTitle = remember { mutableStateOf(TextFieldValue()) }
         val songTonality = remember { mutableStateOf(TextFieldValue()) }
         val songTemp = remember { mutableStateOf(TextFieldValue()) }
-        val songWords = remember { mutableStateOf(TextFieldValue()) }
 
         val songIsGlorifyingSong = remember { mutableStateOf(false) }
         val songIsWorshipSong = remember { mutableStateOf(false) }
@@ -109,27 +112,27 @@ private fun MainContent(
             songTonality, songTemp, songIsGlorifyingSong, songIsWorshipSong, songIsGiftSong, songIsFromSongbookSong
         ) {
             val newSong = makeSong(
-                songTitle.value.text,
-                songTonality.value.text,
-                songWords.value.text,
-                if (songTemp.value.text.isEmpty()) 0 else songTemp.value.text.toInt(),
-                songIsGlorifyingSong.value,
-                songIsWorshipSong.value,
-                songIsGiftSong.value,
-                songIsFromSongbookSong.value
+                title = songTitle.value.text,
+                tonality = songTonality.value.text,
+                words = songWords.value.text,
+                temp = songTemp.value.text,
+                isGlorifyingSong = songIsGlorifyingSong.value,
+                isWorshipSong = songIsWorshipSong.value,
+                isGiftSong = songIsGiftSong.value,
+                isFromSongbookSong = songIsFromSongbookSong.value
             )
 
 
             savingLogic(newSong, isSongSavedCorrectly, newSongFieldState) {
                 cleanFieldsValues(
-                    songTitle,
-                    songTonality,
-                    songWords,
-                    songTemp,
-                    songIsGlorifyingSong,
-                    songIsWorshipSong,
-                    songIsGiftSong,
-                    songIsFromSongbookSong
+                    songTitle = songTitle,
+                    songWords = songWords,
+                    songTonality = songTonality,
+                    songTemp = songTemp,
+                    songIsGlorifyingSong = songIsGlorifyingSong,
+                    songIsWorshipSong = songIsWorshipSong,
+                    songIsGiftSong = songIsGiftSong,
+                    songIsFromSongbookSong = songIsFromSongbookSong
                 )
 
             }
@@ -204,11 +207,11 @@ fun savingLogic(
 ) {
     if (newSong.title.isEmpty()) {
         newSongFieldState.value = NewSongFieldState.INVALID_TITLE
-    }  else if (newSong.words.isEmpty()) {
+    } else if (newSong.words.isEmpty()) {
         newSongFieldState.value = NewSongFieldState.INVALID_WORDS
     } else if (newSong.tonality.isEmpty()) {
         newSongFieldState.value = NewSongFieldState.INVALID_TONALITY
-    }else if (newSong.temp == 0 || newSong.temp < 0) {
+    } else if (newSong.temp.toInt() == 0 || newSong.temp.toInt() < 0) {
         newSongFieldState.value = NewSongFieldState.INVALID_TEMP
     } else if (!newSong.isGlorifyingSong && !newSong.isWorshipSong) {
         newSongFieldState.value = NewSongFieldState.INVALID_CATEGORY

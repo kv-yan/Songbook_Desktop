@@ -44,10 +44,11 @@ private fun MainContent(
                 performerName = "404",
                 createDate = "404",
                 weekday = "404",
-                favorite = false,
+                isSingleMode = false,
                 glorifyingSong = emptyList(),
                 worshipSong = emptyList(),
-                giftSong = emptyList()
+                giftSong = emptyList(),
+                singleModeSongs = emptyList()
             )
         )
     }

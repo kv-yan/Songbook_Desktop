@@ -53,6 +53,9 @@ private fun MainContent() {
         val templateGiftSongs = remember {
             mutableStateOf(mutableStateListOf<Song>())
         }
+        val templateSingleModeSongs = remember {
+            mutableStateOf(mutableStateListOf<Song>())
+        }
 
         val templatePerformerName = remember { mutableStateOf(TextFieldValue()) }
         val templateWeekday = remember { mutableStateOf("") }
@@ -116,13 +119,16 @@ private fun MainContent() {
         val template = remember {
             mutableStateOf(
                 SongTemplate(
-                    "SongTemplate",
-                    currentDate.value.format(DateTimeFormatter.ISO_LOCAL_DATE),
-                    templatePerformerName.value.text,
-                    templateWeekday.value, false,
-                    templateGlorifyingSongs.value,
-                    templateWorshipSongs.value,
-                    templateGiftSongs.value,
+                    id = "SongTemplate",
+                    createDate = currentDate.value.format(DateTimeFormatter.ISO_LOCAL_DATE),
+                    performerName = templatePerformerName.value.text,
+                    weekday = templateWeekday.value,
+                    isSingleMode = false,
+                    glorifyingSong = templateGlorifyingSongs.value,
+                    worshipSong = templateWorshipSongs.value,
+                    giftSong = templateGiftSongs.value,
+                    singleModeSongs = templateSingleModeSongs.value
+
                 )
             )
         }

@@ -35,7 +35,7 @@ fun SingleSongTemplateScreen(
                 words = "404",
                 isGlorifyingSong = false,
                 isWorshipSong = false,
-                temp = 100,
+                temp = "404",
                 isGiftSong = false,
                 isFromSongbookSong = false
             )

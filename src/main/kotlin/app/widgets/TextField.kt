@@ -14,19 +14,15 @@ import app.style.appSecondaryColor
 
 @Composable
 fun TextField(placeholder: String, textFieldValue: MutableState<TextFieldValue>) {
-    TextField(
-        value = textFieldValue.value,
-        onValueChange = { it: TextFieldValue ->
-            textFieldValue.value = it
-        },
-        placeholder = { Text(text = placeholder, color = Color.Gray) },
-        colors = TextFieldDefaults.textFieldColors(
-            backgroundColor = Color.Transparent,
-            focusedIndicatorColor = appSecondaryColor,
-            unfocusedIndicatorColor = Color.Transparent,
-            cursorColor = Color.Gray,
-            textColor = Color.White
-        ), modifier = Modifier.fillMaxWidth()
+    TextField(value = textFieldValue.value, onValueChange = { it: TextFieldValue ->
+        textFieldValue.value = it
+    }, placeholder = { Text(text = placeholder, color = Color.Gray) }, colors = TextFieldDefaults.textFieldColors(
+        backgroundColor = Color.Transparent,
+        focusedIndicatorColor = appSecondaryColor,
+        unfocusedIndicatorColor = Color.Transparent,
+        cursorColor = Color.Gray,
+        textColor = Color.White
+    ), modifier = Modifier.fillMaxWidth()
     )
 }
 

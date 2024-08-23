@@ -6,21 +6,43 @@ fun makeSong(
     title: String,
     tonality: String,
     words: String,
-    temp: Int,
+    temp: String,
     isGlorifyingSong: Boolean,
     isWorshipSong: Boolean,
     isGiftSong: Boolean,
-    isFromSongbookSong: Boolean
-) = Song("Song", title, tonality, words,temp, isGlorifyingSong, isWorshipSong, isGiftSong, isFromSongbookSong)
+    isFromSongbookSong: Boolean,
+) = Song(
+    id = "Song",
+    title = title,
+    tonality = tonality,
+    words = words,
+    temp = temp,
+    isGlorifyingSong = isGlorifyingSong,
+    isWorshipSong = isWorshipSong,
+    isGiftSong = isGiftSong,
+    isFromSongbookSong = isFromSongbookSong,
+
+    )
 
 fun makeSong(
     id: String,
     title: String,
     tonality: String,
     words: String,
-    temp: Int,
+    temp: String,
     isGlorifyingSong: Boolean,
     isWorshipSong: Boolean,
     isGiftSong: Boolean,
-    isFromSongbookSong: Boolean
-) = Song(id, title, tonality,words,temp,isGlorifyingSong, isWorshipSong, isGiftSong, isFromSongbookSong)
+    isFromSongbookSong: Boolean,
+) = Song(
+    id = id,
+    title = title,
+    tonality = tonality,
+    words = words,
+    temp = temp,
+    isGlorifyingSong = isGlorifyingSong,
+    isWorshipSong = isWorshipSong,
+    isGiftSong = isGiftSong,
+    isFromSongbookSong = isFromSongbookSong
+)
+

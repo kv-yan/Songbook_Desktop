@@ -5,10 +5,10 @@ data class Song(
     var title: String,
     var tonality: String,
     var words: String,
-    val temp: Int,
+    var temp: String,
+    var isUsingSoundTrack: Boolean = false,
     var isGlorifyingSong: Boolean,
     var isWorshipSong: Boolean,
     var isGiftSong: Boolean,
-    var isFromSongbookSong: Boolean
+    var isFromSongbookSong: Boolean,
 )
-

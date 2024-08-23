@@ -27,27 +27,44 @@ class GetTemplatesFromFirebaseImpl : GetTemplatesFromFirebase {
                     if (templateList.size > 0) templateList.clear()
                     for (item: DataSnapshot in p0.children) {
                         val template: HashMap<String, Any> = item.value as HashMap<String, Any>
-                        id = item.key
-                        createDate = template.getValue("createDate") as String
-                        performerName = template.getValue("performerName") as String
-                        weekday = template.getValue("weekday") as String
-                        favorite = template.getValue("favorite") as Boolean
-                        glorifyingSong =
-                            getListOfSongs(template.getValue("glorifyingSong") as ArrayList<HashMap<Any, Any>>)
-                        worshipSong = getListOfSongs(template.getValue("worshipSong") as ArrayList<HashMap<Any, Any>>)
-                        giftSong = getListOfSongs(template.getValue("giftSong") as ArrayList<HashMap<Any, Any>>)
+                        val createDate = template["createDate"] as String
+                        val performerName = template["performerName"] as String
+                        val weekday = template["weekday"] as String
+                        val isSingleMode = template["singleMode"] as Boolean
+                        var glorifyingSong: List<Song>
+                        var worshipSong: List<Song>
+                        var giftSong: List<Song>
+                        var singleModeSongs: List<Song>
+
+                        if (isSingleMode) {
+                            singleModeSongs = getListOfSongs(template["singleModeSongs"] as ArrayList<HashMap<Any, Any>>)
+                            glorifyingSong = listOf<Song>()
+                            worshipSong = listOf<Song>()
+                            giftSong = listOf<Song>()
+                        } else {
+                            singleModeSongs = listOf<Song>()
+                            glorifyingSong =
+                                getListOfSongs(template["glorifyingSong"] as ArrayList<HashMap<Any, Any>>)
+                            worshipSong =
+                                getListOfSongs(template["worshipSong"] as ArrayList<HashMap<Any, Any>>)
+                            giftSong =
+                                getListOfSongs(template["giftSong"] as ArrayList<HashMap<Any, Any>>)
+                        }
+
+
                         templateList.add(
-                            SongTemplate(/*"SongTemplate"*/id,
-                                createDate,
-                                performerName,
-                                weekday,
-                                favorite,
-                                glorifyingSong,
-                                worshipSong,
-                                giftSong
+                            SongTemplate(
+                                id = item.key.toString(),
+                                createDate = createDate,
+                                performerName = performerName,
+                                weekday = weekday,
+                                isSingleMode = isSingleMode,
+                                glorifyingSong = glorifyingSong,
+                                worshipSong = worshipSong,
+                                giftSong = giftSong,
+                                singleModeSongs = singleModeSongs
                             )
                         )
-
                     }
                     continuation.resume(templateList)
                 }
@@ -71,30 +88,33 @@ class GetTemplatesFromFirebaseImpl : GetTemplatesFromFirebase {
     private fun getListOfSongs(song: ArrayList<HashMap<Any, Any>>): List<Song> {
         val songList = mutableListOf<Song>()
         for (item in song) {
-            lateinit var title: String
-            lateinit var tonality: String
-            lateinit var words: String
-            var temp: Int = 0
-            var isGlorifyingSong: Boolean
-            var isWorshipSong: Boolean
-            var isGiftSong: Boolean
-            var isFromSongbookSong: Boolean
-            val songItem: HashMap<Any, Any> = item
-            title = songItem.getValue("title") as String
-            tonality = songItem.getValue("tonality") as String
-            words = songItem.getValue("words") as String
-            temp = songItem.getValue("temp") as Int
-            isGlorifyingSong = songItem.getValue("glorifyingSong") as Boolean
-            isWorshipSong = songItem.getValue("worshipSong") as Boolean
-            isGiftSong = songItem.getValue("giftSong") as Boolean
-            isFromSongbookSong = songItem.getValue("fromSongbookSong") as Boolean
-            mDataBase.key?.let {
-                Song(
-                    it, title, tonality, words, temp, isGlorifyingSong, isWorshipSong, isGiftSong, isFromSongbookSong
-                )
-            }?.let {
-                songList.add(it)
+            val id = item["id"] as String
+            val title = item["title"] as String
+            val tonality = item["tonality"] as String
+            val words = item["words"] as String
+            val temp = item["temp"] as String
+            val isGlorifyingSong = item["glorifyingSong"] as Boolean
+            val isWorshipSong = item["worshipSong"] as Boolean
+            val isGiftSong = item["giftSong"] as Boolean
+            val isFromSongbookSong = item["fromSongbookSong"] as Boolean
+            val isUsingSoundTrack = try { item["usingSoundTrack"] as Boolean
+            } catch (ex : NullPointerException){
+                false
             }
+            songList.add(
+                Song(
+                    id = id,
+                    title = title,
+                    tonality = tonality,
+                    words = words,
+                    temp = temp,
+                    isGlorifyingSong = isGlorifyingSong,
+                    isWorshipSong = isWorshipSong,
+                    isGiftSong = isGiftSong,
+                    isFromSongbookSong = isFromSongbookSong,
+                    isUsingSoundTrack = isUsingSoundTrack
+                )
+            )
         }
         return songList
     }

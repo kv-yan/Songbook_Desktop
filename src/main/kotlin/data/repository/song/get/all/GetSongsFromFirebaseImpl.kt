@@ -28,7 +28,7 @@ class GetSongsFromFirebaseImpl : GetSongsFromFirebase {
                     val title = song.getValue("title") as String
                     val tonality = song.getValue("tonality") as String
                     val words = song.getValue("words") as String
-                    val temp = song.getValue("temp") as Long
+                    val temp = song.getValue("temp") as String
                     val id = item.key as String
 
                     val songObj = Song(
@@ -36,7 +36,7 @@ class GetSongsFromFirebaseImpl : GetSongsFromFirebase {
                         title = title,
                         tonality = tonality,
                         words = words,
-                        temp = temp.toInt(),
+                        temp = temp,
                         isGlorifyingSong = isGlorifyingSong,
                         isWorshipSong = isWorshipSong,
                         isGiftSong = isGiftSong,

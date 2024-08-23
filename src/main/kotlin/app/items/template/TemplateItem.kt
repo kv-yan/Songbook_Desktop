@@ -25,16 +25,16 @@ fun SongTemplateColumItem(
     isShowEditTemplateScreen: MutableState<Boolean>,
 ) {
     val isShowingTemplateDetails = remember { mutableStateOf(false) }
-    val item = remember { mutableStateOf(template) }
 
+    template
     Column(modifier = Modifier.fillMaxWidth()) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp).fillMaxWidth(0.5f)
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp).fillMaxWidth()
         ) {
 
             Text(
-                text = item.value.performerName,
+                text = template.performerName,
                 style = MaterialTheme.typography.body1,
                 color = Color.White,
                 modifier = Modifier.fillMaxWidth(0.5f)
@@ -46,13 +46,13 @@ fun SongTemplateColumItem(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = item.value.weekday,
+                    text = template.weekday,
                     style = MaterialTheme.typography.body1,
                     color = Color.White,
                 )
 
                 Text(
-                    text = "| ${item.value.createDate}", style = MaterialTheme.typography.body1, color = Color.White
+                    text = "| ${template.createDate}", style = MaterialTheme.typography.body1, color = Color.White
                 )
                 IconButton(onClick = { isShowingTemplateDetails.value = !isShowingTemplateDetails.value }) {
                     Icon(
@@ -66,15 +66,15 @@ fun SongTemplateColumItem(
                 )
             }
 
-            AnimatedVisibility(visible = isShowingTemplateDetails.value) {
-                println(item.value.glorifyingSong.size)
-                Text(
-                    text = item.value.getDetails(),
-                    style = MaterialTheme.typography.body1,
-                    color = Color.White,
-                    modifier = Modifier.padding(start = 24.dp, bottom = 24.dp)
-                )
-            }
+        }
+        AnimatedVisibility(visible = isShowingTemplateDetails.value, modifier = Modifier.fillMaxWidth()) {
+            Text(
+                text = template.getDetails(),
+                style = MaterialTheme.typography.body1,
+                color = Color.White,
+                modifier = Modifier.padding(start = 24.dp, bottom = 24.dp)
+            )
+
         }
     }
 }

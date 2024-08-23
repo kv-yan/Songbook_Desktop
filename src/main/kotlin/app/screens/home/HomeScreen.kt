@@ -62,11 +62,11 @@ private fun MainContent(isShowSingleSong: MutableState<Boolean>, isShowEditSongS
                     id = "404",
                     title = "404",
                     tonality = "404",
+                    temp = "404",
                     words = "404",
                     isGlorifyingSong = false,
                     isWorshipSong = false,
                     isGiftSong = false,
-                    temp = 100,
                     isFromSongbookSong = false
                 )
             )
@@ -79,7 +79,7 @@ private fun MainContent(isShowSingleSong: MutableState<Boolean>, isShowEditSongS
                     tonality = "error",
                     words = "error",
                     isGlorifyingSong = false,
-                    temp = 100,
+                    temp = "404",
                     isWorshipSong = false,
                     isGiftSong = false,
                     isFromSongbookSong = false

@@ -11,16 +11,15 @@ class UpdateSongInFirebaseImpl : UpdateSongInFirebase {
         val songId = song.id
         val songRef = databaseRef.child(songId)
 
-
         val updatedValues = mapOf(
             "title" to updatedSong.title,
             "tonality" to updatedSong.tonality,
             "words" to updatedSong.words,
+            "temp" to updatedSong.temp,
             "isGlorifyingSong" to updatedSong.isGlorifyingSong,
             "isWorshipSong" to updatedSong.isWorshipSong,
             "isGiftSong" to updatedSong.isGiftSong,
             "isFromSongbookSong" to updatedSong.isFromSongbookSong,
-//            "temp" to updatedSong.temp,
         )
 
         songRef.updateChildren(

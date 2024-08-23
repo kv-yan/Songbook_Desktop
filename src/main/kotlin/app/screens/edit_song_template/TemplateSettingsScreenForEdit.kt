@@ -39,7 +39,7 @@ fun TemplateSettingsScreenForEdit(
                 Box(contentAlignment = Alignment.BottomCenter, modifier = Modifier.background(appBg).fillMaxSize()) {
                     Button(
                         onClick = {
-                            onUpdateSongTemplateItem(template)
+                            onUpdateSongTemplateItem(template , template)
                         },
                         modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 16.dp),
                         colors = ButtonDefaults.buttonColors(backgroundColor = appSecondaryColor)
