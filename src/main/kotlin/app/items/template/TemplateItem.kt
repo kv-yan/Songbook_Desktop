@@ -26,7 +26,6 @@ fun SongTemplateColumItem(
 ) {
     val isShowingTemplateDetails = remember { mutableStateOf(false) }
 
-    template
     Column(modifier = Modifier.fillMaxWidth()) {
         Row(
             verticalAlignment = Alignment.CenterVertically,

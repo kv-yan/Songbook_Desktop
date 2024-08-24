@@ -14,7 +14,7 @@ import domain.model.MenuItem
 
 @Composable
 fun MenuItemRow(
-    menuItem: MenuItem, onItemClick: (action: Unit) -> Unit, isSelected: Boolean
+    menuItem: MenuItem, onItemClick: (action: Unit) -> Unit
 ) {
     Row(
         modifier = Modifier.clickable { onItemClick(menuItem.action) }.fillMaxWidth()

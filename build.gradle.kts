@@ -4,7 +4,6 @@ plugins {
     kotlin("jvm")
     id("org.jetbrains.compose")
 }
-
 group = "ro.betel.app"
 version = "1.0-SNAPSHOT"
 
@@ -39,12 +38,31 @@ dependencies {
 
 compose.desktop {
     application {
-        mainClass = "MainKt"
+        mainClass = "app.screens.main_menu.MainKt"
 
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "Songbook_Desktop"
+            packageName = "SongbookAdmin"
             packageVersion = "1.0.0"
+            windows {
+                packageVersion = "1.0.0"
+                msiPackageVersion = "1.0.0"
+                exePackageVersion = "1.0.0"
+            }
+            linux {
+                packageVersion = "1.0.0"
+                debPackageVersion = "1.0.0"
+                rpmPackageVersion = "1.0.0"
+            }
+            macOS {
+                packageVersion = "1.0.0"
+                dmgPackageVersion = "1.0.0"
+                pkgPackageVersion = "1.0.0"
+
+                packageBuildVersion = "1.0.0"
+                dmgPackageBuildVersion = "1.0.0"
+                pkgPackageBuildVersion = "1.0.0"
+            }
         }
     }
 }

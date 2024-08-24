@@ -40,7 +40,7 @@ fun CategoriesAddSongsFunctionalityScreen(
             SearchView(searchText) { }
         }
         LazyColumn(modifier = Modifier.fillMaxWidth()) {
-            itemsIndexed(items = allCategorySongs) { index, items ->
+            itemsIndexed(items = allCategorySongs) { _, items ->
                 SongsColumItemForAddSongToTemplate(items) {
                     actionClick.value(items)
                 }

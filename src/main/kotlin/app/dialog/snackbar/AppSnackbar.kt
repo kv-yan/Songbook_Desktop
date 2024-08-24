@@ -17,7 +17,6 @@ fun AppSnackbar(isShowing: MutableState<Boolean>, modifier: Modifier, content: @
         visible = isShowing.value,
         enter = fadeIn() + slideInVertically(initialOffsetY = { -180 }),
         exit = fadeOut() + slideOutVertically(targetOffsetY = { -50 }),
-        initiallyVisible = false
     ) {
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
             content.invoke()
@@ -35,7 +34,6 @@ fun AppSnackbar(isShowing: MutableState<Boolean>, modifier: Modifier, content: @
 @Composable
 fun MainContent() {
     val showSnackbar = remember { mutableStateOf(false) }
-    val message = "Do something"
 
     Box(
         modifier = Modifier.fillMaxSize()

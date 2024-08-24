@@ -10,9 +10,12 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.WindowPlacement
+import androidx.compose.ui.window.WindowState
 import androidx.compose.ui.window.singleWindowApplication
 import app.additional.initFirebase
 import app.items.menu.MenuItemRow
@@ -46,7 +49,6 @@ fun MainScreen(newSongTitle: MutableState<TextFieldValue>, newSongWords: Mutable
         MenuSection(
 
             menuItems = menuItems,
-            selectedItem = selectedItem.value,
             navigationDestination = selectedItem.value,
             onMenuItemClick = { menuItem ->
                 selectedItem.value = menuItem
@@ -62,7 +64,6 @@ fun MainScreen(newSongTitle: MutableState<TextFieldValue>, newSongWords: Mutable
 @Composable
 fun MenuSection(
     menuItems: List<MenuItem>,
-    selectedItem: MenuItem,
 
     navigationDestination: MenuItem,
     onMenuItemClick: (MenuItem) -> Unit,
@@ -84,7 +85,7 @@ fun MenuSection(
                         menuItem = menuItem, onItemClick = {
                             onMenuItemClick(menuItem)
                             navigationDestination.destination = menuItem.destination
-                        }, menuItem == selectedItem
+                        }
                     )
                 }
             }
@@ -107,7 +108,7 @@ fun ScreenSection(
 }
 
 
-fun main() = singleWindowApplication(title = "Bethel" , icon = painterResource("app_logo_transparent.png")) {
+fun main() = singleWindowApplication(title = "Bethel" , state = WindowState(placement = WindowPlacement.Maximized)) {
     val titleState = remember { mutableStateOf(TextFieldValue()) }
     val wordsState = remember { mutableStateOf(TextFieldValue()) }
 

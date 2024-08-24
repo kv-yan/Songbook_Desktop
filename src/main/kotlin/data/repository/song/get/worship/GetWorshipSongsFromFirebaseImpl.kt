@@ -12,24 +12,28 @@ import kotlin.coroutines.resumeWithException
 
 class GetWorshipSongsFromFirebaseImpl : GetWorshipSongsFromFirebase {
     private val databaseRef = FirebaseDatabase.getInstance().getReference("Song")
+
     override suspend fun getWorshipSongsFromFirebase(): List<Song> = suspendCancellableCoroutine { continuation ->
         val worshipSongs = mutableListOf<Song>()
         val vListener: ValueEventListener = object : ValueEventListener {
-            override fun onDataChange(p0: DataSnapshot) {
-                if (worshipSongs.size > 0) worshipSongs.clear()
-                for (item: DataSnapshot in p0.children) {
-                    val song: HashMap<Any, Any> = item.value as HashMap<Any, Any>
-                    val isGlorifyingSong = song.getValue("glorifyingSong") as Boolean
-                    val isWorshipSong = song.getValue("worshipSong") as Boolean
-                    val isGiftSong = song.getValue("giftSong") as Boolean
-                    val isFromSongbookSong = song.getValue("fromSongbookSong") as Boolean
+            override fun onDataChange(snapshot: DataSnapshot) {
+                worshipSongs.clear() // Clear the list to avoid duplicates
+                for (item in snapshot.children) {
+                    // Safe casting to Map<*, *>
+                    val song = item.value as? Map<*, *> ?: continue
+
+                    // Use safe casting and provide default values
+                    val isGlorifyingSong = song["glorifyingSong"] as? Boolean ?: false
+                    val isWorshipSong = song["worshipSong"] as? Boolean ?: false
+                    val isGiftSong = song["giftSong"] as? Boolean ?: false
+                    val isFromSongbookSong = song["fromSongbookSong"] as? Boolean ?: false
 
                     if (isGlorifyingSong || isWorshipSong || isGiftSong || isFromSongbookSong) {
-                        val title = song.getValue("title") as String
-                        val tonality = song.getValue("tonality") as String
-                        val words = song.getValue("words") as String
-                        val temp = song.getValue("temp") as String
-                        val id = item.key as String
+                        val title = song["title"] as? String ?: ""
+                        val tonality = song["tonality"] as? String ?: ""
+                        val words = song["words"] as? String ?: ""
+                        val temp = song["temp"] as? String ?: ""
+                        val id = item.key ?: ""
 
                         val songObj = Song(
                             id = id,
@@ -42,15 +46,16 @@ class GetWorshipSongsFromFirebaseImpl : GetWorshipSongsFromFirebase {
                             isGiftSong = isGiftSong,
                             isFromSongbookSong = isFromSongbookSong
                         )
-                        if (songObj.isGlorifyingSong)
+                        if (songObj.isWorshipSong) { // Check the specific criteria for worship songs
                             worshipSongs.add(songObj)
+                        }
                     }
                 }
                 continuation.resume(worshipSongs)
             }
 
-            override fun onCancelled(p0: DatabaseError) {
-                continuation.resumeWithException(p0.toException())
+            override fun onCancelled(error: DatabaseError) {
+                continuation.resumeWithException(error.toException())
             }
         }
 
