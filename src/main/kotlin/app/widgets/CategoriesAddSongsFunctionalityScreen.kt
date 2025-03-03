@@ -15,7 +15,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import app.items.songs.SongsColumItemForAddSongToTemplate
 import domain.model.Song
@@ -25,9 +24,9 @@ fun CategoriesAddSongsFunctionalityScreen(
     isShowAllCategoriesSongs: MutableState<Boolean>,
     allCategorySongs: List<Song>,
     addSongTitle: MutableState<String>,
-    actionClick: MutableState<(item: Song) -> Unit>
+    actionClick: MutableState<(item: Song) -> Unit>,
 ) {
-    val searchText = remember { mutableStateOf(TextFieldValue()) }
+    val searchText = remember { mutableStateOf("") }
     Column {
         Text(
             text = "Ավելացրեք ${addSongTitle.value}",

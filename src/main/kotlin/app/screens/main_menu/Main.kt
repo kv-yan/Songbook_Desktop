@@ -10,7 +10,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
@@ -47,7 +46,6 @@ fun MainScreen(newSongTitle: MutableState<TextFieldValue>, newSongWords: Mutable
 
     Row(modifier = Modifier.fillMaxSize().background(appBg)) {
         MenuSection(
-
             menuItems = menuItems,
             navigationDestination = selectedItem.value,
             onMenuItemClick = { menuItem ->
@@ -108,7 +106,7 @@ fun ScreenSection(
 }
 
 
-fun main() = singleWindowApplication(title = "Bethel" , state = WindowState(placement = WindowPlacement.Maximized)) {
+fun main() = singleWindowApplication(title = "Bethel", state = WindowState(placement = WindowPlacement.Maximized)) {
     val titleState = remember { mutableStateOf(TextFieldValue()) }
     val wordsState = remember { mutableStateOf(TextFieldValue()) }
 

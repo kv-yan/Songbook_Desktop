@@ -10,7 +10,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.input.TextFieldValue
 import app.di.AppComponent
 import app.items.template.SongTemplateColumItem
 import app.screens.edit_song_template.EditSongTemplateScreen
@@ -52,7 +51,7 @@ private fun MainContent(
             )
         )
     }
-    val searchText = remember { mutableStateOf(TextFieldValue()) }
+    val searchText = remember { mutableStateOf("") }
     val allSongs = remember { mutableStateOf<List<SongTemplate>>(mutableListOf()) }
     val scope = rememberCoroutineScope()
     val isShowSingleSong = remember { mutableStateOf(false) }

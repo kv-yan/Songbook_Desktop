@@ -12,7 +12,8 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import app.di.AppComponent
@@ -46,12 +47,14 @@ fun main() = application {
 private fun MainContent(isShowSingleSong: MutableState<Boolean>, isShowEditSongScreen: MutableState<Boolean>) {
     val allSongs = remember { mutableStateOf<MutableList<Song>>(mutableListOf()) }
     val screenSongs = remember { mutableStateOf<MutableList<Song>>(mutableListOf()) }
-    val searchText = remember { mutableStateOf(TextFieldValue()) }
+    val searchText = remember { mutableStateOf("") }
     val scope = rememberCoroutineScope()
-
-    scope.launch {
-        allSongs.value = AppComponent.getSongsFromFirebaseUseCase.execute().toMutableList()
-        screenSongs.value = searchSongByContains(allSongs.value, "").toMutableList()
+    LaunchedEffect(Unit) {
+        scope.launch {
+            allSongs.value = AppComponent.getSongsFromFirebaseUseCase.execute().toMutableList()
+//            screenSongs.value = searchSongByContains(allSongs.value, "").toMutableList()
+            screenSongs.value = allSongs.value
+        }
     }
 
     Column(modifier = Modifier.background(appBg).fillMaxSize()) {
@@ -100,17 +103,7 @@ private fun MainContent(isShowSingleSong: MutableState<Boolean>, isShowEditSongS
             }
 
 
-            if (allSongs.value.isEmpty()) {
-                LazyColumn(modifier = Modifier.fillMaxWidth().background(appBg)) {
-                    items(8) {
-                        SongShimmerAnimation()
-                    }
-                }
-            } else if (searchText.value.text.isEmpty() && allSongs.value.isEmpty()) {
-                Column {
-                    Text("Ոչինչ չի գտնվել \'${searchText.value.text}\' ")
-                }
-            } else {
+            if (allSongs.value.isNotEmpty()) {
                 LazyColumn(modifier = Modifier.fillMaxWidth().background(appBg)) {
                     items(screenSongs.value) { songItem ->
                         Column(modifier = Modifier.clickable {
@@ -122,6 +115,21 @@ private fun MainContent(isShowSingleSong: MutableState<Boolean>, isShowEditSongS
                                 onEditSong(isShowEditSongScreen)
                             }
                         }
+                    }
+                }
+            } else if (searchText.value.isNotEmpty() && allSongs.value.isEmpty()) {
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = "Ոչինչ չի գտնվել \'${searchText.value}\' ",
+                    color = Color.White,
+                    fontSize = 16.sp,
+                    textAlign = TextAlign.Center
+                )
+
+            } else {
+                LazyColumn(modifier = Modifier.fillMaxWidth().background(appBg)) {
+                    items(8) {
+                        SongShimmerAnimation()
                     }
                 }
             }

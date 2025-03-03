@@ -7,7 +7,7 @@ import java.io.FileInputStream
 import java.io.InputStream
 
 fun initFirebase() {
-    val serviceAccountPath = "C:\\Users\\varda\\songbook\\songs-22ede-firebase-adminsdk-68cqx-571ba0ff25.json"
+    val serviceAccountPath = "C:\\Users\\varda\\IdeaProjects\\Songbook_Desktop_v2\\src\\main\\kotlin\\app\\additional\\songs-22ede-firebase-adminsdk-68cqx-571ba0ff25.json"
     val serviceAccount: InputStream = FileInputStream(serviceAccountPath)
 
     val options = FirebaseOptions.builder()

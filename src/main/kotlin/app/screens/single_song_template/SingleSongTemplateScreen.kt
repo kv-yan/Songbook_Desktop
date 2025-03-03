@@ -87,7 +87,7 @@ private fun MainContent(
             color = appTextColor,
             modifier = Modifier.padding(vertical = 12.dp, horizontal = 24.dp)
         )
-        LazyColumn(modifier = Modifier.fillMaxWidth().background(appBg).heightIn(150.dp, 1000.dp)) {
+        LazyColumn(modifier = Modifier.fillMaxWidth().background(appBg).heightIn(0.dp, 1000.dp)) {
             items(template.glorifyingSong) { item ->
                 SongsColumItem(item, isShowSingleSong, singleSongScreenContent)
             }
