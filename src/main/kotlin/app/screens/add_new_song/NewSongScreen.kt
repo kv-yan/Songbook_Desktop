@@ -4,10 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
@@ -26,19 +23,6 @@ import app.widgets.TextField
 import data.lambda.song.makeSong.makeSong
 import domain.model.Song
 
-
-enum class NewSongFieldState(val msg: String, val bgColor: Color) {
-    INVALID_TITLE("Լրացրեք 'Վերնագիր' բաժինը", Color.Red), INVALID_WORDS(
-        "Լրացրեք 'Բառեր' բաժինը", Color.Red
-    ),
-    INVALID_TONALITY("Լրացրեք 'Տոն' բաժինը", Color.Red), INVALID_TEMP(
-        "Լրացրեք 'Տեմպ' բաժինը", Color.Red
-    ),
-    INVALID_CATEGORY(
-        "Նշեք թէ երգը որ տեսակին է պատկանում․ \nԵրգը պոտք է լինի կամ 'փառաբանություն' կամ 'Երկրպագություն'", Color.Red
-    ),
-    DONE("Երգը հաջողությամբ պահպանվել է", appSecondaryColor),
-}
 
 @Composable
 fun NewSongScreen(newSongTitle: MutableState<TextFieldValue>, newSongWords: MutableState<TextFieldValue>) {
@@ -87,16 +71,51 @@ private fun MainContent(
     songTitle: MutableState<TextFieldValue>,
     songWords: MutableState<TextFieldValue>,
 ) {
+    val songTonality = remember { mutableStateOf(TextFieldValue()) }
+    val songTemp = remember { mutableStateOf(TextFieldValue()) }
+
+    val songIsGlorifyingSong = remember { mutableStateOf(false) }
+    val songIsWorshipSong = remember { mutableStateOf(false) }
+    val songIsGiftSong = remember { mutableStateOf(false) }
+    val songIsFromSongbookSong = remember { mutableStateOf(false) }
+
+    val newSong = makeSong(
+        title = songTitle.value.text,
+        tonality = songTonality.value.text,
+        words = songWords.value.text,
+        temp = songTemp.value.text,
+        isGlorifyingSong = songIsGlorifyingSong.value,
+        isWorshipSong = songIsWorshipSong.value,
+        isGiftSong = songIsGiftSong.value,
+        isFromSongbookSong = songIsFromSongbookSong.value
+    )
+
+    val showingMatchedDialog = remember { mutableStateOf(false) }
+
+    val existingSongs = remember { mutableStateOf<List<Song>>(emptyList()) }
+    val matchedSongs = remember { mutableStateOf<List<Song>>(emptyList()) }
+
+    LaunchedEffect(Unit) {
+        existingSongs.value = AppComponent.getSongsFromFirebaseUseCase.execute()
+    }
+
+    SongMatchedDialog(
+        isShowingDialog = showingMatchedDialog.value,
+        matchedSongs = matchedSongs.value,
+        onCancelClick = {
+            showingMatchedDialog.value = false
+        },
+        onSaveClick = {
+            AppComponent.saveSongToFirebaseUseCase.saveSongToFirebase.saveSong(newSong)
+            newSongFieldState.value = NewSongFieldState.DONE
+            isSongSavedCorrectly.value = true
+            showingMatchedDialog.value = false
+        }
+    )
 
 
     Row(modifier = Modifier.fillMaxSize().background(appBg)) {
-        val songTonality = remember { mutableStateOf(TextFieldValue()) }
-        val songTemp = remember { mutableStateOf(TextFieldValue()) }
 
-        val songIsGlorifyingSong = remember { mutableStateOf(false) }
-        val songIsWorshipSong = remember { mutableStateOf(false) }
-        val songIsGiftSong = remember { mutableStateOf(false) }
-        val songIsFromSongbookSong = remember { mutableStateOf(false) }
 
         Column(modifier = Modifier.fillMaxWidth(0.8f).drawBehind {
             val x = size.width
@@ -110,19 +129,15 @@ private fun MainContent(
         SongSettingScreen(
             songTonality, songTemp, songIsGlorifyingSong, songIsWorshipSong, songIsGiftSong, songIsFromSongbookSong
         ) {
-            val newSong = makeSong(
-                title = songTitle.value.text,
-                tonality = songTonality.value.text,
-                words = songWords.value.text,
-                temp = songTemp.value.text,
-                isGlorifyingSong = songIsGlorifyingSong.value,
-                isWorshipSong = songIsWorshipSong.value,
-                isGiftSong = songIsGiftSong.value,
-                isFromSongbookSong = songIsFromSongbookSong.value
-            )
 
-
-            savingLogic(newSong, isSongSavedCorrectly, newSongFieldState) {
+            savingLogic(
+                newSong = newSong,
+                isSongSavedCorrectly = isSongSavedCorrectly,
+                newSongFieldState = newSongFieldState,
+                existingSongs = existingSongs.value,
+                showMatchDialog = showingMatchedDialog,
+                matchedSongs = matchedSongs
+            ) {
                 cleanFieldsValues(
                     songTitle = songTitle,
                     songWords = songWords,
@@ -133,12 +148,10 @@ private fun MainContent(
                     songIsGiftSong = songIsGiftSong,
                     songIsFromSongbookSong = songIsFromSongbookSong
                 )
-
             }
         }
 
     }
-//    SongSavedSuccessfully(isSongSavedCorrectly)
 }
 
 fun cleanFieldsValues(
@@ -200,8 +213,11 @@ fun SongSettingScreen(
 
 fun savingLogic(
     newSong: Song,
-    showDialog: MutableState<Boolean>,
+    showMatchDialog: MutableState<Boolean>,
     newSongFieldState: MutableState<NewSongFieldState>,
+    existingSongs: List<Song>,
+    matchedSongs: MutableState<List<Song>>,
+    isSongSavedCorrectly: MutableState<Boolean>, // Add this parameter
     onCompleted: () -> Unit,
 ) {
     if (newSong.title.isEmpty()) {
@@ -215,9 +231,16 @@ fun savingLogic(
     } else if (!newSong.isGlorifyingSong && !newSong.isWorshipSong) {
         newSongFieldState.value = NewSongFieldState.INVALID_CATEGORY
     } else {
-        AppComponent.saveSongToFirebaseUseCase.saveSongToFirebase.saveSong(newSong)
-        onCompleted.invoke()
-        newSongFieldState.value = NewSongFieldState.DONE
+        val matches = findMatchingSongs(newSong, existingSongs)
+
+        if (matches.isNotEmpty()) {
+            matchedSongs.value = matches
+            showMatchDialog.value = true
+        } else {
+            AppComponent.saveSongToFirebaseUseCase.saveSongToFirebase.saveSong(newSong)
+            onCompleted()
+            newSongFieldState.value = NewSongFieldState.DONE
+            isSongSavedCorrectly.value = true
+        }
     }
-    showDialog.value = true
 }
