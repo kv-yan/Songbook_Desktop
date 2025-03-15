@@ -55,17 +55,14 @@ private fun MainContent(isShowSingleSong: MutableState<Boolean>, isShowEditSongS
         screenSongs.value = mutableListOf()
         allSongs.value = mutableListOf()
         loadingSongs.value = true
-//        searchText.value = ""
-//        isShowEditSongScreen.value = false
-//        isShowSingleSong.value = false
     }
 
     LaunchedEffect(loadingSongs.value) {
         if (loadingSongs.value)
             scope.launch {
                 allSongs.value = AppComponent.getSongsFromFirebaseUseCase.execute().toMutableList()
+                allSongs.value.sortBy { it.title.lowercase() }
                 screenSongs.value = allSongs.value
-                println("loaded !!!!!!!!")
                 loadingSongs.value = false
             }
     }
@@ -123,14 +120,12 @@ private fun MainContent(isShowSingleSong: MutableState<Boolean>, isShowEditSongS
                 screenSongs.value = searchSongByContains(allSongs.value, query).toMutableList()
             }
 
-
             if (allSongs.value.isNotEmpty()) {
                 LazyColumn(modifier = Modifier.fillMaxWidth().background(appBg)) {
                     items(screenSongs.value) { songItem ->
                         Column(modifier = Modifier.clickable {
                             selectedSongItem.value = songItem
                             isShowSingleSong.value = !isShowSingleSong.value
-
                         }) {
                             SongsColumItem(song = songItem, clickedItem = editSongItem, onEditingItem = {
                                 onEditSong(isShowEditSongScreen)
@@ -158,7 +153,6 @@ private fun MainContent(isShowSingleSong: MutableState<Boolean>, isShowEditSongS
             }
         }
     }
-
 }
 
 
