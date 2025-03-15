@@ -10,7 +10,6 @@ class SaveSongTemplateToFirebaseImpl : SaveSongTemplateToFirebase {
     override fun saveSongTemplate(songTemplate: SongTemplate) {
         try {
             databaseRef.push().setValue(songTemplate, null)
-            println("saveSongTemplate :: saved new template ")
         } catch (ex: Exception) {
             println(ex.message)
         }

@@ -1,0 +1,11 @@
+package app.screens.add_new_song
+
+import androidx.compose.ui.graphics.Color
+import app.style.appSecondaryColor
+
+enum class NewSongFieldState(val msg: String, val bgColor: Color) {
+    INVALID_TITLE("Լրացրեք 'Վերնագիր' բաժինը", Color.Red), INVALID_WORDS("Լրացրեք 'Բառեր' բաժինը", Color.Red),
+    INVALID_TONALITY("Լրացրեք 'Տոն' բաժինը", Color.Red), INVALID_TEMP("Լրացրեք 'Տեմպ' բաժինը", Color.Red),
+    INVALID_CATEGORY("Նշեք թէ երգը որ տեսակին է պատկանում․ \nԵրգը պոտք է լինի կամ 'փառաբանություն' կամ 'Երկրպագություն'", Color.Red),
+    DONE("Երգը հաջողությամբ պահպանվել է", appSecondaryColor),
+}

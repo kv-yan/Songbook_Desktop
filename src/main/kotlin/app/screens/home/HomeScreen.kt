@@ -49,12 +49,25 @@ private fun MainContent(isShowSingleSong: MutableState<Boolean>, isShowEditSongS
     val screenSongs = remember { mutableStateOf<MutableList<Song>>(mutableListOf()) }
     val searchText = remember { mutableStateOf("") }
     val scope = rememberCoroutineScope()
-    LaunchedEffect(Unit) {
-        scope.launch {
-            allSongs.value = AppComponent.getSongsFromFirebaseUseCase.execute().toMutableList()
-//            screenSongs.value = searchSongByContains(allSongs.value, "").toMutableList()
-            screenSongs.value = allSongs.value
-        }
+    val loadingSongs = remember { mutableStateOf(true) }
+
+    fun showLoading(){
+        screenSongs.value = mutableListOf()
+        allSongs.value = mutableListOf()
+        loadingSongs.value = true
+//        searchText.value = ""
+//        isShowEditSongScreen.value = false
+//        isShowSingleSong.value = false
+    }
+
+    LaunchedEffect(loadingSongs.value) {
+        if (loadingSongs.value)
+            scope.launch {
+                allSongs.value = AppComponent.getSongsFromFirebaseUseCase.execute().toMutableList()
+                screenSongs.value = allSongs.value
+                println("loaded !!!!!!!!")
+                loadingSongs.value = false
+            }
     }
 
     Column(modifier = Modifier.background(appBg).fillMaxSize()) {
@@ -90,11 +103,19 @@ private fun MainContent(isShowSingleSong: MutableState<Boolean>, isShowEditSongS
         }
 
         if (isShowSingleSong.value) {
-            SingleSongScreen(selectedSongItem.value, isShowSingleSong, onEditClick = {
-                onEditSong(isShowEditSongScreen)
-                editSongItem.value = selectedSongItem.value
-                isShowSingleSong.value = false
-            })
+            SingleSongScreen(
+                song = selectedSongItem.value,
+                isShowSingleSong = isShowSingleSong,
+                onEditClick = {
+                    onEditSong(isShowEditSongScreen)
+                    editSongItem.value = selectedSongItem.value
+                    isShowSingleSong.value = false
+                },
+                onExitScreen = {
+                    isShowSingleSong.value = false
+                    showLoading()
+                }
+            )
         } else if (isShowEditSongScreen.value) {
             EditSongScreen(editSongItem.value, isShowEditSongScreen)
         } else {
@@ -111,9 +132,11 @@ private fun MainContent(isShowSingleSong: MutableState<Boolean>, isShowEditSongS
                             isShowSingleSong.value = !isShowSingleSong.value
 
                         }) {
-                            SongsColumItem(songItem, editSongItem) {
+                            SongsColumItem(song = songItem, clickedItem = editSongItem, onEditingItem = {
                                 onEditSong(isShowEditSongScreen)
-                            }
+                            }, onDeleteCompleted = {
+                                showLoading()
+                            })
                         }
                     }
                 }
@@ -135,6 +158,7 @@ private fun MainContent(isShowSingleSong: MutableState<Boolean>, isShowEditSongS
             }
         }
     }
+
 }
 
 

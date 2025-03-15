@@ -74,7 +74,7 @@ private fun MainContent(song: Song, isShowEditSongScreen: MutableState<Boolean>)
                 songIsGiftSong.value,
                 songIsFromSongbookSong.value
             )
-            println(newSong)
+
             onUpdateSongItem(song, newSong)
             isShowSuccessfulDialog.value = true
             scope.launch {

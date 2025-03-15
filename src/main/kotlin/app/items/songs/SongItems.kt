@@ -15,7 +15,12 @@ import domain.extensions.song.getWordsFirst2Lines
 import domain.model.Song
 
 @Composable
-fun SongsColumItem(song: Song, clickedItem: MutableState<Song>, onEditingItem: () -> Unit) {
+fun SongsColumItem(
+    song: Song,
+    clickedItem: MutableState<Song>,
+    onEditingItem: () -> Unit,
+    onDeleteCompleted: () -> Unit,
+) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         MusicSongIcon()
         Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp).fillMaxWidth(0.96f)) {
@@ -23,16 +28,20 @@ fun SongsColumItem(song: Song, clickedItem: MutableState<Song>, onEditingItem: (
             SongTonality(song.getWordsFirst2Lines())
             Spacer(Modifier.weight(1f))
         }
-        MoreVerticalIcon(song = song, onEditClicked = {
-            clickedItem.value = song
-            onEditingItem()
-        })
+        MoreVerticalIcon(
+            song = song,
+            onDeleteCompleted = onDeleteCompleted,
+            onEditClicked = {
+                clickedItem.value = song
+                onEditingItem()
+            }
+        )
     }
 }
 
 
 @Composable
-fun SongsColumItem(song: Song, selectedItem: MutableState<Boolean>,singleSongScreenContent: MutableState<Song>) {
+fun SongsColumItem(song: Song, selectedItem: MutableState<Boolean>, singleSongScreenContent: MutableState<Song>) {
     Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.clickable {
         selectedItem.value = !selectedItem.value
         singleSongScreenContent.value = song

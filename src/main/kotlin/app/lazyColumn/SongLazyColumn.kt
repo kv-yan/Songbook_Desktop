@@ -54,7 +54,5 @@ fun MutableList<Song>.toSnapshotStateList(): SnapshotStateList<Song> {
     this.forEach {
         list.add(it)
     }
-    println("worked")
-
     return list
 }

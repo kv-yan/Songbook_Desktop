@@ -17,12 +17,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import app.dialog.song.IsDeleteSongDialog
 import app.dialog.template.IsDeleteSongTemplateDialog
+import data.lambda.song.delete.onDeleteSongItem
 import domain.model.Song
 import domain.model.SongTemplate
 
 
 @Composable
-fun MoreVerticalIcon(song: Song, onEditClicked: (Song) -> Unit) {
+fun MoreVerticalIcon(song: Song, onEditClicked: (Song) -> Unit, onDeleteCompleted: () -> Unit = {}) {
     val items = remember {
         mutableStateListOf("Խմբագրել", "Ջնջել")
     }
@@ -70,7 +71,13 @@ fun MoreVerticalIcon(song: Song, onEditClicked: (Song) -> Unit) {
 
     }
     if (isShowDeleteSongDialog.value) {
-        IsDeleteSongDialog(song, isShowDeleteSongDialog)
+        IsDeleteSongDialog(
+            song = song,
+            showDialog = isShowDeleteSongDialog
+        ) {
+            isShowDeleteSongDialog.value = false
+            onDeleteSongItem(song)
+        }
     }
 }
 

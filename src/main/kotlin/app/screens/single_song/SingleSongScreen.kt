@@ -24,6 +24,7 @@ import app.dialog.song.IsDeleteSongDialog
 import app.style.appBg
 import app.style.appTextColor
 import app.widgets.MenuArrowBack
+import data.lambda.song.delete.onDeleteSongItem
 import domain.model.Song
 
 @Composable
@@ -31,6 +32,7 @@ fun SingleSongScreen(
     song: Song,
     isShowSingleSong: MutableState<Boolean>,
     onEditClick: () -> Unit,
+    onExitScreen: () -> Unit,
 ) {
     val scrollState = rememberScrollState(0)
     val isShowDeleteSongDialog = remember { mutableStateOf(false) }
@@ -87,6 +89,10 @@ fun SingleSongScreen(
         }
     }
     if (isShowDeleteSongDialog.value) {
-        IsDeleteSongDialog(song, isShowDeleteSongDialog)
+        IsDeleteSongDialog(song, isShowDeleteSongDialog) {
+            onDeleteSongItem(it)
+            isShowDeleteSongDialog.value = false
+            onExitScreen()
+        }
     }
 }
