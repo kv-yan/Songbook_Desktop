@@ -33,15 +33,27 @@ fun EditSongScreen(song: Song, isShowEditSongScreen: MutableState<Boolean>) {
 @Composable
 private fun MainContent(song: Song, isShowEditSongScreen: MutableState<Boolean>) {
     Row(modifier = Modifier.fillMaxSize().background(appBg)) {
-        val songTitle = remember { mutableStateOf(TextFieldValue().copy(text = song.title)) }
-        val songTonality = remember { mutableStateOf(TextFieldValue().copy(text = song.tonality)) }
-        val songTemp = remember { mutableStateOf(TextFieldValue().copy(text = song.temp)) }
-        val songWords = remember { mutableStateOf(TextFieldValue().copy(text = song.words)) }
+        val songTitle = remember { mutableStateOf(TextFieldValue()) }
+        val songTonality = remember { mutableStateOf(TextFieldValue()) }
+        val songTemp = remember { mutableStateOf(TextFieldValue()) }
+        val songWords = remember { mutableStateOf(TextFieldValue()) }
 
         val songIsGlorifyingSong = remember { mutableStateOf(song.isGlorifyingSong) }
         val songIsWorshipSong = remember { mutableStateOf(song.isWorshipSong) }
         val songIsGiftSong = remember { mutableStateOf(song.isGiftSong) }
         val songIsFromSongbookSong = remember { mutableStateOf(song.isFromSongbookSong) }
+
+        LaunchedEffect(song){
+            print("song: $song")
+            songTitle.value = TextFieldValue().copy(text = song.title)
+            songTonality.value = TextFieldValue().copy(text = song.tonality)
+            songTemp.value = TextFieldValue().copy(text = song.temp)
+            songWords.value = TextFieldValue().copy(text = song.words)
+            songIsGlorifyingSong.value = song.isGlorifyingSong
+            songIsWorshipSong.value = song.isWorshipSong
+            songIsGiftSong.value = song.isGiftSong
+            songIsFromSongbookSong.value = song.isFromSongbookSong
+        }
 
         val isShowSuccessfulDialog = remember { mutableStateOf(false) }
         val scope = rememberCoroutineScope()
@@ -63,6 +75,7 @@ private fun MainContent(song: Song, isShowEditSongScreen: MutableState<Boolean>)
             songTonality, songTemp,
             songIsGlorifyingSong, songIsWorshipSong, songIsGiftSong, songIsFromSongbookSong
         ) {
+            print("update song isGlorifyingSong: ${songIsGlorifyingSong.value}, isWorshipSong: ${songIsWorshipSong.value}, isGiftSong: ${songIsGiftSong.value}, isFromSongbookSong: ${songIsFromSongbookSong.value}")
             val newSong = makeSong(
                 song.id,
                 songTitle.value.text,

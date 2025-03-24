@@ -16,10 +16,10 @@ class UpdateSongInFirebaseImpl : UpdateSongInFirebase {
             "tonality" to updatedSong.tonality,
             "words" to updatedSong.words,
             "temp" to updatedSong.temp,
-            "isGlorifyingSong" to updatedSong.isGlorifyingSong,
-            "isWorshipSong" to updatedSong.isWorshipSong,
-            "isGiftSong" to updatedSong.isGiftSong,
-            "isFromSongbookSong" to updatedSong.isFromSongbookSong,
+            "glorifyingSong" to updatedSong.isGlorifyingSong,
+            "worshipSong" to updatedSong.isWorshipSong,
+            "giftSong" to updatedSong.isGiftSong,
+            "fromSongbookSong" to updatedSong.isFromSongbookSong,
         )
 
         songRef.updateChildren(
