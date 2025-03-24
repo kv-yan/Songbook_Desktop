@@ -34,16 +34,19 @@ compose.desktop {
             packageName = "SongbookAdmin"
             packageVersion = "1.0.0"
             windows {
+                iconFile.set(project.file("app_logo.png"))
                 packageVersion = "1.0.0"
                 msiPackageVersion = "1.0.0"
                 exePackageVersion = "1.0.0"
             }
             linux {
+                iconFile.set(project.file("app_logo.png"))
                 packageVersion = "1.0.0"
                 debPackageVersion = "1.0.0"
                 rpmPackageVersion = "1.0.0"
             }
             macOS {
+                iconFile.set(project.file("app_logo.icns"))
                 packageVersion = "1.0.0"
                 dmgPackageVersion = "1.0.0"
                 pkgPackageVersion = "1.0.0"

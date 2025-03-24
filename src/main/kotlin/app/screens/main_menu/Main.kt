@@ -1,12 +1,13 @@
 package app.screens.main_menu
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.Icon
 import androidx.compose.material.Surface
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
@@ -46,9 +47,7 @@ fun MainScreen(newSongTitle: MutableState<TextFieldValue>, newSongWords: Mutable
 
     Row(modifier = Modifier.fillMaxSize().background(appBg)) {
         MenuSection(
-            menuItems = menuItems,
-            navigationDestination = selectedItem.value,
-            onMenuItemClick = { menuItem ->
+            menuItems = menuItems, navigationDestination = selectedItem.value, onMenuItemClick = { menuItem ->
                 selectedItem.value = menuItem
             })
         ScreenSection(
@@ -66,15 +65,23 @@ fun MenuSection(
     navigationDestination: MenuItem,
     onMenuItemClick: (MenuItem) -> Unit,
 ) {
-    Column(modifier = Modifier.width(220.dp).drawBehind {
-        val x = size.width
-        val y = size.height
-        drawLine(color = appSecondaryColor, start = Offset(x, 0f), end = Offset(x, y), strokeWidth = 0.5f)
-    }) {
-        Image(
-            painter = painterResource("app_logo_transparent.png"),
+    Column(
+        modifier = Modifier
+            .width(220.dp)
+            .drawBehind {
+                val x = size.width
+                val y = size.height
+                drawLine(color = appSecondaryColor, start = Offset(x, 0f), end = Offset(x, y), strokeWidth = 0.5f)
+            },
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Icon(
+//            painter = painterResource("app_logo_transparent.png"),
+//            painter = painterResource("app_logo.png"),
+            painter = painterResource("header_image.png"),
             contentDescription = "Some description",
-            modifier = Modifier.width(240.dp).height(120.dp).padding(end = 150.dp, top = 16.dp)
+            tint = appSecondaryColor,
+            modifier = Modifier.size(120.dp).padding(top = 16.dp).offset(x = (-34).dp)
         )
         Surface(modifier = Modifier.width(200.dp)) {
             LazyColumn(modifier = Modifier.fillMaxHeight().background(appBg)) {
@@ -83,8 +90,7 @@ fun MenuSection(
                         menuItem = menuItem, onItemClick = {
                             onMenuItemClick(menuItem)
                             navigationDestination.destination = menuItem.destination
-                        }
-                    )
+                        })
                 }
             }
         }
@@ -105,8 +111,10 @@ fun ScreenSection(
     }
 }
 
-
-fun main() = singleWindowApplication(title = "Bethel", state = WindowState(placement = WindowPlacement.Maximized)) {
+fun main() = singleWindowApplication(
+    title = "Bethel",
+    state = WindowState(placement = WindowPlacement.Maximized)
+) {
     val titleState = remember { mutableStateOf(TextFieldValue()) }
     val wordsState = remember { mutableStateOf(TextFieldValue()) }
 
@@ -122,7 +130,6 @@ fun main() = singleWindowApplication(title = "Bethel", state = WindowState(place
                     if (file.extension == "docx") {
                         val (parsedTitle, parsedText) = parseDocxFile(file.absolutePath)
 
-                        // Check if parsedTitle and parsedText are not empty before updating
                         if (parsedTitle.isNotEmpty()) {
                             titleState.value = titleState.value.copy(text = parsedTitle)
                         }
@@ -142,6 +149,7 @@ fun main() = singleWindowApplication(title = "Bethel", state = WindowState(place
     // Main Screen with Drop functionality
     MainScreen(titleState, wordsState)
 }
+
 
 fun parseDocxFile(filePath: String): Pair<String, String> {
     val inputStream: InputStream = FileInputStream(filePath)

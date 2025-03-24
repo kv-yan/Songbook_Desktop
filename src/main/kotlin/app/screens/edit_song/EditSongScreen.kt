@@ -44,7 +44,6 @@ private fun MainContent(song: Song, isShowEditSongScreen: MutableState<Boolean>)
         val songIsFromSongbookSong = remember { mutableStateOf(song.isFromSongbookSong) }
 
         LaunchedEffect(song){
-            print("song: $song")
             songTitle.value = TextFieldValue().copy(text = song.title)
             songTonality.value = TextFieldValue().copy(text = song.tonality)
             songTemp.value = TextFieldValue().copy(text = song.temp)
@@ -75,7 +74,6 @@ private fun MainContent(song: Song, isShowEditSongScreen: MutableState<Boolean>)
             songTonality, songTemp,
             songIsGlorifyingSong, songIsWorshipSong, songIsGiftSong, songIsFromSongbookSong
         ) {
-            print("update song isGlorifyingSong: ${songIsGlorifyingSong.value}, isWorshipSong: ${songIsWorshipSong.value}, isGiftSong: ${songIsGiftSong.value}, isFromSongbookSong: ${songIsFromSongbookSong.value}")
             val newSong = makeSong(
                 song.id,
                 songTitle.value.text,

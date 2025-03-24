@@ -7,8 +7,6 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.TextFieldValue
@@ -103,15 +101,12 @@ private fun MainContent(
 
         Row(modifier = Modifier.fillMaxSize().background(appBg)) {
 
-            Column(modifier = Modifier.fillMaxWidth(0.8f).drawBehind {
-                val x = size.width
-                val y = size.height
-                drawLine(color = appSecondaryColor, start = Offset(x, 0f), end = Offset(x, y), strokeWidth = 2f)
-            }) {
+            Column(modifier = Modifier.fillMaxWidth(0.8f)) {
                 TextField(placeholder = "Վերնագիր․․․", songTitle, textStyle = MaterialTheme.typography.h6)
 
                 TextField(placeholder = "Բառեր․․․", songWords, textStyle = MaterialTheme.typography.h6)
             }
+            Spacer(modifier = Modifier.fillMaxHeight().width(1.dp).background(appSecondaryColor))
 
             SongSettingScreen(
                 songTonality, songTemp, songIsGlorifyingSong, songIsWorshipSong, songIsGiftSong, songIsFromSongbookSong

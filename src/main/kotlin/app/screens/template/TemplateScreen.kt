@@ -1,20 +1,21 @@
 package app.screens.template
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.*
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 import app.di.AppComponent
 import app.items.template.SongTemplateColumItem
 import app.screens.edit_song_template.EditSongTemplateScreen
 import app.screens.single_song_template.SingleSongTemplateScreen
 import app.style.appBg
+import app.style.appSecondaryColor
 import app.widgets.SearchView
 import app.widgets.TemplateShimmerAnimation
 import domain.model.SongTemplate
@@ -72,15 +73,39 @@ private fun MainContent(
                     }
                 }
             } else {
-                LazyColumn(modifier = Modifier.fillMaxWidth().background(appBg)) {
-                    items(allSongs.value) { menuItem ->
-                        Column(modifier = Modifier.clickable {
-                            selectedTemplateItem.value = menuItem
-                            isShowSingleSongTemplate.value = !isShowSingleSongTemplate.value
-                        }) {
-                            SongTemplateColumItem(menuItem, showIsEditSongTemplate)
+                Box(modifier = Modifier.fillMaxWidth().background(appBg)) {
+                    val state = rememberLazyListState()
+                    LazyColumn(
+                        modifier = Modifier.fillMaxWidth().background(appBg),
+                        state = state,
+                    ) {
+                        items(allSongs.value, key = { it.id }) { menuItem ->
+                            Column(modifier = Modifier.clickable {
+                                selectedTemplateItem.value = menuItem
+                                isShowSingleSongTemplate.value = !isShowSingleSongTemplate.value
+                            }) {
+                                SongTemplateColumItem(menuItem, showIsEditSongTemplate)
+                            }
                         }
                     }
+
+                    VerticalScrollbar(
+                        modifier = Modifier
+                            .align(Alignment.CenterEnd)
+                            .padding(end = 2.dp)
+                            .fillMaxHeight(),
+                        style = ScrollbarStyle(
+                            minimalHeight = 16.dp,
+                            thickness = 8.dp,
+                            shape = androidx.compose.foundation.shape.RoundedCornerShape(4.dp),
+                            hoverDurationMillis = 200,
+                            unhoverColor = Color.LightGray,
+                            hoverColor = appSecondaryColor
+                        ),
+                        adapter = rememberScrollbarAdapter(
+                            scrollState = state,
+                        )
+                    )
                 }
             }
         }

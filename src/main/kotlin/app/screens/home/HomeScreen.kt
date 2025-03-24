@@ -1,18 +1,18 @@
 package app.screens.home
 
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.*
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
@@ -21,6 +21,7 @@ import app.items.songs.SongsColumItem
 import app.screens.edit_song.EditSongScreen
 import app.screens.single_song.SingleSongScreen
 import app.style.appBg
+import app.style.appSecondaryColor
 import app.widgets.SearchView
 import app.widgets.SongShimmerAnimation
 import data.lambda.search.searchSongByContains
@@ -51,7 +52,7 @@ private fun MainContent(isShowSingleSong: MutableState<Boolean>, isShowEditSongS
     val scope = rememberCoroutineScope()
     val loadingSongs = remember { mutableStateOf(true) }
 
-    fun showLoading(){
+    fun showLoading() {
         screenSongs.value = mutableListOf()
         allSongs.value = mutableListOf()
         loadingSongs.value = true
@@ -116,24 +117,65 @@ private fun MainContent(isShowSingleSong: MutableState<Boolean>, isShowEditSongS
         } else if (isShowEditSongScreen.value) {
             EditSongScreen(editSongItem.value, isShowEditSongScreen)
         } else {
-            SearchView(searchText) { query ->
-                screenSongs.value = searchSongByContains(allSongs.value, query).toMutableList()
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+
+                Text(
+                    modifier = Modifier.padding(horizontal = 16.dp),
+                    text = "Ընդհ․ ${allSongs.value.size} երգ",
+                    color = Color.White,
+                    fontSize = 16.sp
+                )
+
+                SearchView(searchText) { query ->
+                    screenSongs.value = searchSongByContains(allSongs.value, query).toMutableList()
+                }
             }
 
             if (allSongs.value.isNotEmpty()) {
-                LazyColumn(modifier = Modifier.fillMaxWidth().background(appBg)) {
-                    items(screenSongs.value) { songItem ->
-                        Column(modifier = Modifier.clickable {
-                            selectedSongItem.value = songItem
-                            isShowSingleSong.value = !isShowSingleSong.value
-                        }) {
-                            SongsColumItem(song = songItem, clickedItem = editSongItem, onEditingItem = {
-                                onEditSong(isShowEditSongScreen)
-                            }, onDeleteCompleted = {
-                                showLoading()
-                            })
+                Box(modifier = Modifier.fillMaxWidth().background(appBg)) {
+                    val state = rememberLazyListState()
+
+                    LazyColumn(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        state = state
+                    ) {
+                        items(screenSongs.value, key = {it.id}) { songItem ->
+                            Column(modifier = Modifier.clickable {
+                                selectedSongItem.value = songItem
+                                isShowSingleSong.value = !isShowSingleSong.value
+                            }) {
+                                SongsColumItem(
+                                    song = songItem,
+                                    clickedItem = editSongItem,
+                                    onEditingItem = { onEditSong(isShowEditSongScreen) },
+                                    onDeleteCompleted = { showLoading() }
+                                )
+                            }
                         }
                     }
+
+                    VerticalScrollbar(
+                        modifier = Modifier
+                            .align(Alignment.CenterEnd)
+                            .padding(end = 2.dp)
+                            .fillMaxHeight(),
+                        style = ScrollbarStyle(
+                            minimalHeight = 16.dp,
+                            thickness = 8.dp,
+                            shape = androidx.compose.foundation.shape.RoundedCornerShape(4.dp),
+                            hoverDurationMillis = 200,
+                            unhoverColor = Color.LightGray,
+                            hoverColor = appSecondaryColor
+                        ),
+                        adapter = rememberScrollbarAdapter(
+                            scrollState = state,
+                        )
+                    )
                 }
             } else if (searchText.value.isNotEmpty() && allSongs.value.isEmpty()) {
                 Text(
